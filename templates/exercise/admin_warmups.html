@@ -13,6 +13,8 @@
       <div class="nav-links">
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('exercise.setup') }}">Exercise</a>
+        <a href="{{ url_for('exercise.progress') }}">Progress</a>
+        <a href="{{ url_for('exercise.workout_logs') }}">Workout Logs</a>
       </div>
       <div class="nav-links">
         <a class="text-link" href="{{ url_for('exercise.admin_home') }}">Admin Home</a>
@@ -30,7 +32,7 @@
       </header>
 
       <main class="exercise-main">
-        <div class="card">
+        <div class="card add-card">
           <h2 class="section-title">Add warm-up</h2>
           <form method="post" class="form-grid">
             <label>
@@ -52,6 +54,10 @@
                 {% endfor %}
               </div>
             </div>
+            <label>
+              <span class="helper">Duration (seconds)</span><br>
+              <input class="input-field" type="number" name="duration_seconds" value="60" min="10" step="5">
+            </label>
             <button class="primary-button" type="submit">Add warm-up</button>
           </form>
         </div>
@@ -83,6 +89,10 @@
                       {% endfor %}
                     </div>
                   </div>
+                  <label>
+                    <span class="helper">Duration (seconds)</span><br>
+                    <input class="input-field" type="number" name="duration_seconds" value="{{ warmup.duration_seconds }}" min="10" step="5">
+                  </label>
                   <div class="button-row">
                     <button class="primary-button" type="submit">Save changes</button>
                   </div>
@@ -103,4 +113,3 @@
   </div>
 </body>
 </html>
-

@@ -1,14 +1,8 @@
 import random
 
-DIFF_RULES = {
-    "easy":   {"count": 4, "rep_min": 6,  "rep_max": 10},
-    "medium": {"count": 6, "rep_min": 8,  "rep_max": 14},
-    "hard":   {"count": 8, "rep_min": 10, "rep_max": 20},
-}
 
-
-def generate_workout(exercises: list, difficulty: str, focus: str):
-    rules = DIFF_RULES[difficulty]
+def generate_workout(exercises: list, difficulty: str, focus: str, rules: dict):
+    rules = rules[difficulty]
 
     # Filter by focus and allowed difficulty
 

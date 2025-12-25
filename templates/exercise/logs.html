@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Workout Logs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+</head>
+<body>
+  <div class="top-nav">
+    <div class="page-width top-nav-inner">
+      <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('exercise.setup') }}">Exercise</a>
+        <a href="{{ url_for('exercise.progress') }}">Progress</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-shell">
+    <div class="page-width">
+      <header class="exercise-header">
+        <div>
+          <h1>Workout Logs</h1>
+          <p class="subheading">Review past sessions, ratings, and durations.</p>
+        </div>
+      </header>
+
+      <main class="exercise-main">
+        <div class="card">
+          {% if logs %}
+            <ul class="list">
+              {% for entry in logs %}
+                <li>
+                  <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                    <div>
+                      <strong>{{ entry.difficulty|capitalize }} · {{ entry.focus|capitalize }}</strong>
+                      <span>{{ entry.started_display }} → {{ entry.ended_display }} ({{ entry.duration_minutes }} min)</span>
+                      {% if entry.rating %}
+                        <span>{{ "★" * entry.rating }}</span>
+                      {% endif %}
+                    </div>
+                    <div class="chips">
+                      {% if entry.steps %}
+                        <span class="chip">{{ entry.steps|length - (entry.steps|selectattr('type', 'equalto', 'break')|list|length) }} exercises</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="helper">User: {{ entry.user or "Unknown" }}</div>
+                  {% if entry.warmups %}
+                    <div class="helper">Warmups: {{ entry.warmups | map(attribute="name") | join(", ") }}</div>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="helper">No workouts logged yet.</p>
+          {% endif %}
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

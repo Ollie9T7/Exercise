@@ -230,6 +230,7 @@ body {
   gap: 12px;
   flex-wrap: wrap;
   margin-top: 12px;
+  justify-content: flex-end;
 }
 
 .primary-button,
@@ -300,6 +301,13 @@ body {
 
 .admin-item form { margin: 0; }
 
+.add-card {
+  border: 2px dashed #adc6ff;
+  background: #eef3ff;
+}
+
+.add-card h2 { margin-top: 0; }
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -322,4 +330,3 @@ body {
   .top-nav-inner { padding: 0 12px; }
   .page-width { padding: 0 16px; }
 }
-

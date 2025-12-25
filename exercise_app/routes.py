@@ -1,10 +1,18 @@
 import os
 import random
-from datetime import datetime
+import json
+from datetime import datetime, timedelta
 from flask import render_template, request, redirect, url_for, session, current_app
 
 from . import exercise_bp
-from .storage import ensure_data_files, load_json, save_json, append_workout_log
+from .storage import (
+    ensure_data_files,
+    load_json,
+    save_json,
+    append_workout_log,
+    load_difficulty_config,
+    save_difficulty_config,
+)
 from .generate import generate_workout
 
 # Import existing helpers from main app.py
@@ -13,7 +21,7 @@ from basecamp_core import login_required, admin_required, log_action, BASE_DIR
 
 
 
-WARMUP_CATEGORY_OPTIONS = ["cardio", "upper", "legs", "full-body", "mobility", "core", "mixed"]
+WARMUP_CATEGORY_OPTIONS = ["cardio", "upper", "legs", "full-body", "mobility", "core", "stretch", "mixed"]
 
 
 def _paths():
@@ -21,7 +29,8 @@ def _paths():
     exercises_path = os.path.join(data_dir, "exercises.json")
     warmups_path = os.path.join(data_dir, "warmups.json")
     log_path = os.path.join(data_dir, "workout_logs.jsonl")
-    return exercises_path, warmups_path, log_path
+    config_path = os.path.join(data_dir, "settings.json")
+    return exercises_path, warmups_path, log_path, config_path
 
 def _get_logged_in_name():
     return session.get("name") or session.get("username") or "User"
@@ -32,37 +41,68 @@ def _normalize_warmup(warmup: dict):
         "name": warmup.get("name", "Warm-up"),
         "description": warmup.get("description", ""),
         "categories": warmup.get("categories") or ["full-body"],
+        "duration_seconds": warmup.get("duration_seconds") or 60,
     }
 
 
-def _pick_warmup(warmups: list, focus: str):
-    """Choose a warmup that best fits the focus, with sensible fallbacks."""
+def _select_warmups(warmups: list, focus: str):
+    """
+    Choose warmups ensuring at least one cardio and one mobility/stretch.
+    """
     normalized = [_normalize_warmup(w) for w in warmups]
-    preferred = {focus, "full-body", "cardio", "mobility", "mixed"}
-    matches = [w for w in normalized if preferred.intersection(set(w["categories"]))]
-    if not matches:
-        matches = normalized
-    return random.choice(matches) if matches else _normalize_warmup({})
+    cardio = [w for w in normalized if "cardio" in w["categories"]]
+    stretch = [w for w in normalized if "mobility" in w["categories"] or "stretch" in w["categories"]]
+    fallback = normalized or [_normalize_warmup({})]
+
+    chosen = []
+    if cardio:
+        chosen.append(random.choice(cardio))
+    if stretch:
+        pick = random.choice(stretch)
+        if pick not in chosen:
+            chosen.append(pick)
+
+    # if still empty, pick any two fallback
+    if not chosen:
+        chosen = random.sample(fallback, k=min(2, len(fallback)))
+
+    return chosen
 
 
 def _append_workout_log_entry(state: dict):
     """Persist a finished workout to the workout log file."""
-    _, _, log_path = _paths()
+    _, _, log_path, _ = _paths()
     entry = {
         "user": state.get("user"),
         "difficulty": state.get("difficulty"),
         "focus": state.get("focus"),
         "started_at": state.get("started_at"),
         "ended_at": state.get("ended_at"),
-        "warmup": {
-            "name": state.get("warmup"),
-            "description": state.get("warmup_description", ""),
-            "categories": state.get("warmup_categories", []),
-        },
+        "warmups": state.get("warmups", []),
         "steps": state.get("steps", []),
+        "rating": state.get("rating"),
     }
     append_workout_log(log_path, entry)
     return entry
+
+
+def _format_timestamp(ts: str):
+    try:
+        dt = datetime.fromisoformat(ts)
+        return dt.strftime("%d/%m/%y %H:%M")
+    except Exception:
+        return ts or "-"
+
+
+def _calc_duration_minutes(start_iso: str, end_iso: str):
+    try:
+        start = datetime.fromisoformat(start_iso)
+        end = datetime.fromisoformat(end_iso)
+        if end < start:
+            return 0
+        return int((end - start).total_seconds() // 60)
+    except Exception:
+        return 0
 
 @exercise_bp.route("/", methods=["GET", "POST"])
 @login_required
@@ -79,28 +119,26 @@ def setup():
         if focus not in ("legs", "upper", "mixed"):
             focus = "mixed"
 
-        exercises_path, warmups_path, _ = _paths()
+        exercises_path, warmups_path, _, config_path = _paths()
         exercises = load_json(exercises_path, [])
         warmups = [_normalize_warmup(w) for w in load_json(warmups_path, [])]
+        difficulty_config = load_difficulty_config(config_path)
 
         # Build lookup for descriptions in case existing data is missing them
         exercise_lookup = {e.get("name"): e for e in exercises}
-        steps = generate_workout(exercises, difficulty, focus)
+        steps = generate_workout(exercises, difficulty, focus, difficulty_config)
         for step in steps:
             if step.get("type") == "exercise" and not step.get("description"):
                 data = exercise_lookup.get(step.get("name"), {})
                 step["description"] = data.get("description", "")
 
-        warmup_choice = _pick_warmup(warmups, focus)
-        warmup_name = warmup_choice.get("name") or "Light movement"
+        warmup_choices = _select_warmups(warmups, focus)
 
         session["exercise_state"] = {
             "user": _get_logged_in_name(),
             "difficulty": difficulty,
             "focus": focus,
-            "warmup": warmup_name,
-            "warmup_description": warmup_choice.get("description", ""),
-            "warmup_categories": warmup_choice.get("categories", []),
+            "warmups": warmup_choices,
             "steps": steps,
             "index": 0,
             "skipped": [],
@@ -127,8 +165,9 @@ def warmup():
         log_action(username, "exercise_warmup_next")
         return redirect(url_for("exercise.workout"))
 
-    log_action(username, "exercise_warmup_shown", {"warmup": state.get("warmup")})
-    return render_template("exercise/warmup.html", state=state)
+    warmups = state.get("warmups") or []
+    log_action(username, "exercise_warmup_shown", {"warmups": [w.get("name") for w in warmups]})
+    return render_template("exercise/warmup.html", state=state, warmups=warmups)
 
 @exercise_bp.route("/workout", methods=["GET", "POST"])
 @login_required
@@ -187,6 +226,14 @@ def complete():
         state["ended_at"] = datetime.now().isoformat()
 
     if request.method == "POST":
+        rating = request.form.get("rating")
+        try:
+            rating_int = int(rating) if rating else None
+            if rating_int and 1 <= rating_int <= 5:
+                state["rating"] = rating_int
+        except ValueError:
+            pass
+
         if not state.get("logged"):
             _append_workout_log_entry(state)
             state["logged"] = True
@@ -203,7 +250,89 @@ def complete():
     })
 
     session["exercise_state"] = state
-    return render_template("exercise/complete.html", state=state)
+    return render_template(
+        "exercise/complete.html",
+        state=state,
+        started_display=_format_timestamp(state.get("started_at")),
+        ended_display=_format_timestamp(state.get("ended_at")),
+        duration_minutes=_calc_duration_minutes(state.get("started_at"), state.get("ended_at")),
+    )
+
+
+@exercise_bp.route("/logs", methods=["GET"])
+@login_required
+def workout_logs():
+    username = session.get("username")
+    _, _, log_path, _ = _paths()
+    logs = []
+    if os.path.exists(log_path):
+        try:
+            with open(log_path, "r") as f:
+                for line in f:
+                    if not line.strip():
+                        continue
+                    try:
+                        entry = json.loads(line)
+                        entry["started_display"] = _format_timestamp(entry.get("started_at"))
+                        entry["ended_display"] = _format_timestamp(entry.get("ended_at"))
+                        entry["duration_minutes"] = _calc_duration_minutes(entry.get("started_at"), entry.get("ended_at"))
+                        logs.append(entry)
+                    except json.JSONDecodeError:
+                        continue
+        except OSError:
+            pass
+
+    logs.sort(key=lambda x: x.get("started_at") or "", reverse=True)
+    log_action(username, "exercise_logs_view")
+    return render_template("exercise/logs.html", logs=logs)
+
+
+@exercise_bp.route("/progress", methods=["GET"])
+@login_required
+def progress():
+    username = session.get("username")
+    _, _, log_path, _ = _paths()
+    now = datetime.now()
+
+    counters = {
+        "all": {"minutes": 0, "count": 0},
+        "week": {"minutes": 0, "count": 0},
+        "month": {"minutes": 0, "count": 0},
+        "year": {"minutes": 0, "count": 0},
+    }
+
+    if os.path.exists(log_path):
+        try:
+            with open(log_path, "r") as f:
+                for line in f:
+                    if not line.strip():
+                        continue
+                    try:
+                        entry = json.loads(line)
+                        start_iso = entry.get("started_at")
+                        end_iso = entry.get("ended_at")
+                        duration = _calc_duration_minutes(start_iso, end_iso)
+                        if duration <= 0:
+                            continue
+                        start_dt = datetime.fromisoformat(start_iso)
+                        counters["all"]["minutes"] += duration
+                        counters["all"]["count"] += 1
+                        if start_dt.isocalendar()[1] == now.isocalendar()[1] and start_dt.year == now.year:
+                            counters["week"]["minutes"] += duration
+                            counters["week"]["count"] += 1
+                        if start_dt.month == now.month and start_dt.year == now.year:
+                            counters["month"]["minutes"] += duration
+                            counters["month"]["count"] += 1
+                        if start_dt.year == now.year:
+                            counters["year"]["minutes"] += duration
+                            counters["year"]["count"] += 1
+                    except Exception:
+                        continue
+        except OSError:
+            pass
+
+    log_action(username, "exercise_progress_view")
+    return render_template("exercise/progress.html", counters=counters)
 
 # ───────── Admin (re-uses your admin role system) ─────────
 
@@ -218,8 +347,9 @@ def admin_home():
 @admin_required
 def admin_exercises():
     username = session.get("username")
-    exercises_path, _, _ = _paths()
+    exercises_path, _, _, config_path = _paths()
     exercises = load_json(exercises_path, [])
+    difficulty_config = load_difficulty_config(config_path)
 
     if request.method == "POST":
         # Add, update or delete
@@ -262,13 +392,13 @@ def admin_exercises():
 
         return redirect(url_for("exercise.admin_exercises"))
 
-    return render_template("exercise/admin_exercises.html", exercises=exercises)
+    return render_template("exercise/admin_exercises.html", exercises=exercises, difficulty_config=difficulty_config)
 
 @exercise_bp.route("/admin/warmups", methods=["GET", "POST"])
 @admin_required
 def admin_warmups():
     username = session.get("username")
-    _, warmups_path, _ = _paths()
+    _, warmups_path, _, _ = _paths()
     warmups = [_normalize_warmup(w) for w in load_json(warmups_path, [])]
 
     if request.method == "POST":
@@ -282,12 +412,14 @@ def admin_warmups():
             name = (request.form.get("name") or "").strip()
             description = (request.form.get("description") or "").strip()
             categories = request.form.getlist("categories") or ["full-body"]
+            duration = int(request.form.get("duration_seconds") or "60")
 
             for w in warmups:
                 if w.get("name") == original_name:
                     w["name"] = name or original_name
                     w["description"] = description
                     w["categories"] = categories
+                    w["duration_seconds"] = duration
                     break
             save_json(warmups_path, warmups)
             log_action(username, "exercise_admin_warmup_updated", {"name": name})
@@ -295,8 +427,9 @@ def admin_warmups():
             name = (request.form.get("name") or "").strip()
             description = (request.form.get("description") or "").strip()
             categories = request.form.getlist("categories") or ["full-body"]
+            duration = int(request.form.get("duration_seconds") or "60")
             if name:
-                warmups.append({"name": name, "description": description, "categories": categories})
+                warmups.append({"name": name, "description": description, "categories": categories, "duration_seconds": duration})
                 save_json(warmups_path, warmups)
                 log_action(username, "exercise_admin_warmup_added", {"name": name})
 
@@ -304,3 +437,22 @@ def admin_warmups():
 
     return render_template("exercise/admin_warmups.html", warmups=warmups, warmup_categories=WARMUP_CATEGORY_OPTIONS)
 
+
+@exercise_bp.route("/admin/settings", methods=["POST"])
+@admin_required
+def admin_settings():
+    username = session.get("username")
+    _, _, _, config_path = _paths()
+    config = load_difficulty_config(config_path)
+
+    for diff in ["easy", "medium", "hard"]:
+        count = int(request.form.get(f"{diff}_count") or config[diff]["count"])
+        rep_min = int(request.form.get(f"{diff}_rep_min") or config[diff]["rep_min"])
+        rep_max = int(request.form.get(f"{diff}_rep_max") or config[diff]["rep_max"])
+        if rep_max < rep_min:
+            rep_max = rep_min
+        config[diff] = {"count": count, "rep_min": rep_min, "rep_max": rep_max}
+
+    save_difficulty_config(config_path, config)
+    log_action(username, "exercise_admin_settings_updated", {"config": config})
+    return redirect(url_for("exercise.admin_exercises"))

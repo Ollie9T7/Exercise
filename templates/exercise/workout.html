@@ -13,6 +13,8 @@
       <div class="nav-links">
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('exercise.setup') }}">Restart</a>
+        <a href="{{ url_for('exercise.progress') }}">Progress</a>
+        <a href="{{ url_for('exercise.workout_logs') }}">Workout Logs</a>
       </div>
       <div class="nav-links">
         <span class="pill">Step {{ index + 1 }} of {{ total }}</span>
@@ -52,8 +54,8 @@
           {% endif %}
 
           <form method="post" class="button-row">
-            <button class="primary-button" type="submit" name="action" value="continue">Completed</button>
             <button class="ghost-button" type="submit" name="action" value="skip">Skip</button>
+            <button class="primary-button" type="submit" name="action" value="continue">Completed</button>
           </form>
         </div>
       </main>
@@ -61,4 +63,3 @@
   </div>
 </body>
 </html>
-

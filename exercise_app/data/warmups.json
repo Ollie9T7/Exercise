@@ -1,32 +1,38 @@
 [
   {
     "name": "March on the spot",
-    "description": "Gentle marching to raise heart rate and loosen hips.",
-    "categories": ["cardio", "full-body"]
+    "description": "Stand tall and march, lifting knees to hip height, swinging arms naturally. Keep posture upright and breathe steadily.",
+    "categories": ["cardio", "full-body"],
+    "duration_seconds": 60
   },
   {
     "name": "Arm circles",
-    "description": "Small to large circles forwards and backwards to warm shoulders.",
-    "categories": ["upper", "mobility"]
+    "description": "Extend arms to the sides at shoulder height. Make small circles forward for 20s, then reverse direction, gradually increasing circle size without shrugging shoulders.",
+    "categories": ["upper", "mobility"],
+    "duration_seconds": 40
   },
   {
     "name": "Hip circles",
-    "description": "Hands on hips, draw circles both directions to mobilise hips and lower back.",
-    "categories": ["legs", "mobility"]
+    "description": "Hands on hips, draw slow circles with the hips keeping feet planted. Move clockwise for 20s, then counterclockwise, keeping knees soft.",
+    "categories": ["legs", "mobility"],
+    "duration_seconds": 40
   },
   {
     "name": "Dynamic hamstring reaches",
-    "description": "Toe touches with a flat back, alternating legs to wake up hamstrings.",
-    "categories": ["legs", "mobility"]
+    "description": "Step one foot forward, hinge at hips with a flat back to reach toward toes, switch legs each rep, keeping a gentle stretch without bouncing.",
+    "categories": ["legs", "mobility"],
+    "duration_seconds": 40
   },
   {
     "name": "Jumping jacks",
-    "description": "Light cardio to get blood flowing before heavier efforts.",
-    "categories": ["cardio", "full-body"]
+    "description": "Start tall with feet together. Jump feet wide while sweeping arms overhead, then return to start. Keep a steady rhythm and soft knees.",
+    "categories": ["cardio", "full-body"],
+    "duration_seconds": 45
   },
   {
     "name": "Band pull-aparts",
-    "description": "Light band tension, squeeze shoulder blades together for upper back activation.",
-    "categories": ["upper", "mobility"]
+    "description": "Hold a light band at shoulder height, arms straight. Pull the band apart by squeezing shoulder blades together, pause, then return with control.",
+    "categories": ["upper", "mobility"],
+    "duration_seconds": 45
   }
 ]

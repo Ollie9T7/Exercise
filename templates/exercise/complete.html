@@ -13,6 +13,8 @@
       <div class="nav-links">
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('exercise.setup') }}">Plan another</a>
+        <a href="{{ url_for('exercise.progress') }}">Progress</a>
+        <a href="{{ url_for('exercise.workout_logs') }}">Workout Logs</a>
       </div>
       <div class="nav-links">
         <span class="pill">{{ state.difficulty|capitalize }} · {{ state.focus|capitalize }}</span>
@@ -32,15 +34,21 @@
       <main class="exercise-main">
         <div class="card">
           <h2 class="section-title">Summary</h2>
-          <p class="helper">Start: {{ state.started_at }} · End: {{ state.ended_at }}</p>
+          <p class="helper">Start: {{ started_display }} · End: {{ ended_display }} · Duration: {{ duration_minutes }} min</p>
           <ul class="list">
-            <li>
-              <strong>Warm-up</strong>
-              <span>{{ state.warmup }}</span>
-              {% if state.warmup_description %}
-                <span>{{ state.warmup_description }}</span>
-              {% endif %}
-            </li>
+            {% for warmup in state.warmups %}
+              <li>
+                <strong>{{ warmup.name }}</strong>
+                <span>
+                  {% if warmup.duration_seconds >= 60 %}
+                    {{ (warmup.duration_seconds / 60)|round(1) }} min
+                  {% else %}
+                    {{ warmup.duration_seconds }} sec
+                  {% endif %}
+                </span>
+                {% if warmup.description %}<span>{{ warmup.description }}</span>{% endif %}
+              </li>
+            {% endfor %}
             {% for step in state.steps %}
               <li>
                 <strong>{{ step.name }}</strong>
@@ -61,11 +69,24 @@
         </div>
 
         <div class="card">
-          {% if state.logged %}
-            <p class="helper">Workout logged for reporting.</p>
-          {% endif %}
-          <form action="{{ url_for('exercise.complete') }}" method="post">
-            <button class="primary-button" type="submit">Complete workout</button>
+          <form action="{{ url_for('exercise.complete') }}" method="post" class="form-grid">
+            <div>
+              <span class="helper">Rate this workout</span>
+              <div class="option-group" style="display:flex; gap:8px;">
+                {% for val in [1,2,3,4,5] %}
+                  <label style="padding:10px 12px; min-width:60px; justify-content:center;">
+                    <input type="radio" name="rating" value="{{ val }}" {% if state.rating == val %}checked{% endif %}>
+                    <span>{{ "★" * val }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+            {% if state.logged %}
+              <p class="helper">Workout logged for reporting.</p>
+            {% endif %}
+            <div class="button-row">
+              <button class="primary-button" type="submit">Complete workout</button>
+            </div>
           </form>
         </div>
       </main>
@@ -73,4 +94,3 @@
   </div>
 </body>
 </html>
-

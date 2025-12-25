@@ -13,6 +13,8 @@
       <div class="nav-links">
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('exercise.setup') }}">Exercise</a>
+        <a href="{{ url_for('exercise.progress') }}">Progress</a>
+        <a href="{{ url_for('exercise.workout_logs') }}">Workout Logs</a>
       </div>
       <div class="nav-links">
         <a class="text-link" href="{{ url_for('exercise.admin_home') }}">Admin Home</a>
@@ -30,7 +32,7 @@
       </header>
 
       <main class="exercise-main">
-        <div class="card">
+        <div class="card add-card">
           <h2 class="section-title">Add exercise</h2>
           <form method="post" class="form-grid">
             <label>
@@ -62,6 +64,34 @@
             </div>
 
             <button class="primary-button" type="submit">Add exercise</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Difficulty settings</h2>
+          <form action="{{ url_for('exercise.admin_settings') }}" method="post" class="form-grid">
+            {% for diff, cfg in difficulty_config.items() %}
+              <div class="card" style="background:#f9fbff;">
+                <h3 style="margin:0 0 8px;">{{ diff.capitalize() }}</h3>
+                <label>
+                  <span class="helper">Exercises per workout</span><br>
+                  <input class="input-field" type="number" name="{{ diff }}_count" value="{{ cfg.count }}" min="1">
+                </label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <label>
+                    <span class="helper">Min reps</span><br>
+                    <input class="input-field" type="number" name="{{ diff }}_rep_min" value="{{ cfg.rep_min }}" min="1">
+                  </label>
+                  <label>
+                    <span class="helper">Max reps</span><br>
+                    <input class="input-field" type="number" name="{{ diff }}_rep_max" value="{{ cfg.rep_max }}" min="1">
+                  </label>
+                </div>
+              </div>
+            {% endfor %}
+            <div class="button-row">
+              <button class="primary-button" type="submit">Save difficulty settings</button>
+            </div>
           </form>
         </div>
 
@@ -120,4 +150,3 @@
   </div>
 </body>
 </html>
-
