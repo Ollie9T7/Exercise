@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
   <script defer src="{{ url_for('static', filename='js/nav.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/timer.js') }}"></script>
 </head>
 <body>
   <div class="top-nav">
@@ -82,7 +83,7 @@
               <p class="helper">Workout logged for reporting.</p>
             {% endif %}
             <div class="button-row">
-              <button class="primary-button" type="submit">Complete workout</button>
+              <button class="primary-button play-complete-sound" type="submit">Complete workout</button>
             </div>
           </form>
         </div>

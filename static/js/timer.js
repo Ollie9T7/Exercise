@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const notifyAudio = new Audio("/static/audio/notify.mp3");
+
   const timers = document.querySelectorAll(".timer-start");
   timers.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -14,10 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
           clearInterval(interval);
           display.textContent = "Done!";
           btn.disabled = false;
+          notifyAudio.play().catch(() => {});
           return;
         }
         display.textContent = `${remaining}s`;
       }, 1000);
+    });
+  });
+
+  document.querySelectorAll(".play-complete-sound").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      notifyAudio.play().catch(() => {});
     });
   });
 });

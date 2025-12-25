@@ -32,6 +32,9 @@
       </header>
 
       <main class="exercise-main">
+        {% if request.args.get("msg") %}
+          <div class="alert">{{ request.args.get("msg") }}</div>
+        {% endif %}
         <div class="card">
           <h2 class="section-title">Last 7 days vs daily target ({{ daily_target }} min)</h2>
           <div class="progress-bars">
@@ -39,10 +42,16 @@
               <div class="progress-row">
                 <div class="progress-label">{{ day.label }} ({{ day.date_label }})</div>
                 <div class="progress-track">
-                  {% set pct = (day.minutes / day.target * 100) if day.target > 0 else 0 %}
-                  <div class="progress-fill {% if pct > 100 %}over{% endif %}" style="width: {{ [pct, 100] | min }}%;">
-                    <span class="progress-text">{{ day.minutes }} min</span>
-                  </div>
+                  {% if day.minutes <= 0 %}
+                    <div class="progress-fill none" style="width: 100%;">
+                      <span class="progress-text">No workout</span>
+                    </div>
+                  {% else %}
+                    {% set pct = (day.minutes / day.target * 100) if day.target > 0 else 0 %}
+                    <div class="progress-fill {% if pct > 100 %}over{% endif %}" style="width: {{ [pct, 100] | min }}%;">
+                      <span class="progress-text">{{ day.minutes }} min</span>
+                    </div>
+                  {% endif %}
                 </div>
               </div>
             {% endfor %}

@@ -254,7 +254,7 @@ def complete():
                 "focus": state.get("focus"),
             })
         session["exercise_state"] = state
-        return redirect(url_for("exercise.complete", msg="Workout logged"))
+        return redirect(url_for("exercise.progress", msg="Your workout has been recorded"))
 
     log_action(username, "exercise_complete", {
         "difficulty": state.get("difficulty"),

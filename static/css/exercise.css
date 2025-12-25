@@ -369,7 +369,7 @@ body {
 
 .progress-bars {
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .progress-row {
@@ -409,6 +409,10 @@ body {
 
 .progress-fill.over {
   background: linear-gradient(120deg, #f1c40f, #f39c12);
+}
+
+.progress-fill.none {
+  background: #f59f9f;
 }
 
 /* Timer */
