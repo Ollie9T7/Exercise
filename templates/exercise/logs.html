@@ -12,7 +12,7 @@
   <div class="top-nav">
     <div class="page-width top-nav-inner">
       <button class="menu-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
-      <a class="brand-button" href="{{ url_for('exercise.home') }}"><i class="fa-solid fa-dumbbell"></i> BasecampMove</a>
+      <a class="brand-button" href="{{ url_for('exercise.home') }}"><span>Basecamp</span><span class="accent">Move</span></a>
       <div class="nav-links slideout">
         <a class="primary-link" href="{{ url_for('exercise.setup') }}"><i class="fa-solid fa-play"></i> Start Workout</a>
         <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Log Activity</a>
@@ -29,12 +29,12 @@
           <h1>Workout Logs</h1>
           <p class="subheading">Review past sessions, ratings, and durations.</p>
         </div>
-        <div class="header-actions">
-          <a class="text-link" href="{{ url_for('exercise.home') }}">BasecampMove</a>
-        </div>
       </header>
 
       <main class="exercise-main">
+        {% if msg %}
+          <div class="alert">{{ msg }}</div>
+        {% endif %}
         <div class="card">
           {% if logs %}
             <ul class="list">
@@ -56,6 +56,12 @@
                         <span class="chip">{{ entry.steps|length - (entry.steps|selectattr('type', 'equalto', 'break')|list|length) }} exercises</span>
                       {% endif %}
                       <span class="chip">{{ entry.type|capitalize }}</span>
+                      {% if session.role == "admin" %}
+                        <form method="post" action="{{ url_for('exercise.delete_log') }}" style="margin:0;">
+                          <input type="hidden" name="idx" value="{{ entry._idx }}">
+                          <button class="icon-button" type="submit" title="Delete log"><i class="fa-solid fa-xmark"></i></button>
+                        </form>
+                      {% endif %}
                     </div>
                   </div>
                   <div class="helper">User: {{ entry.user or "Unknown" }}</div>

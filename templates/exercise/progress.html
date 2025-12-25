@@ -12,7 +12,7 @@
   <div class="top-nav">
     <div class="page-width top-nav-inner">
       <button class="menu-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
-      <a class="brand-button" href="{{ url_for('exercise.home') }}"><i class="fa-solid fa-dumbbell"></i> BasecampMove</a>
+      <a class="brand-button" href="{{ url_for('exercise.home') }}"><span>Basecamp</span><span class="accent">Move</span></a>
       <div class="nav-links slideout">
         <a class="primary-link" href="{{ url_for('exercise.setup') }}"><i class="fa-solid fa-play"></i> Start Workout</a>
         <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Log Activity</a>
@@ -32,16 +32,6 @@
       </header>
 
       <main class="exercise-main">
-        <div class="card admin-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-          {% for period, data in counters.items() %}
-            <div class="card" style="background:#f9fbff; border-color:#e3e7f0;">
-              <h2 class="section-title" style="text-transform: capitalize;">{{ period }}</h2>
-              <p class="helper">{{ data.minutes }} minutes total</p>
-              <p class="helper">{{ data.count }} workouts</p>
-            </div>
-          {% endfor %}
-        </div>
-
         <div class="card">
           <h2 class="section-title">Last 7 days vs daily target ({{ daily_target }} min)</h2>
           <div class="progress-bars">
@@ -49,14 +39,25 @@
               <div class="progress-row">
                 <div class="progress-label">{{ day.label }} ({{ day.date_label }})</div>
                 <div class="progress-track">
-                  <div class="progress-fill" style="width: {{ [ (day.minutes / day.target * 100), 120 ] | min }}%;">
+                  {% set pct = (day.minutes / day.target * 100) if day.target > 0 else 0 %}
+                  <div class="progress-fill {% if pct > 100 %}over{% endif %}" style="width: {{ [pct, 100] | min }}%;">
                     <span class="progress-text">{{ day.minutes }} min</span>
                   </div>
                 </div>
               </div>
             {% endfor %}
           </div>
-          <p class="helper">Bars may exceed 100% if you went over the daily target.</p>
+          <p class="helper">If you exceed the daily target, the bar turns gold and still shows your total minutes.</p>
+        </div>
+
+        <div class="tile-grid">
+          {% for period, data in counters.items() %}
+            <div class="tile">
+              <div class="tile-title" style="text-transform: capitalize;">{{ period }}</div>
+              <div class="tile-desc">{{ data.minutes }} minutes total</div>
+              <div class="tile-desc">{{ data.count }} workouts</div>
+            </div>
+          {% endfor %}
         </div>
       </main>
     </div>

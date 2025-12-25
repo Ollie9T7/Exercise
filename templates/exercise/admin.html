@@ -12,7 +12,7 @@
   <div class="top-nav">
     <div class="page-width top-nav-inner">
       <button class="menu-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
-      <a class="brand-button" href="{{ url_for('exercise.home') }}"><i class="fa-solid fa-dumbbell"></i> BasecampMove</a>
+      <a class="brand-button" href="{{ url_for('exercise.home') }}"><span>Basecamp</span><span class="accent">Move</span></a>
       <div class="nav-links slideout">
         <a class="primary-link" href="{{ url_for('exercise.setup') }}"><i class="fa-solid fa-play"></i> Start Workout</a>
         <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Log Activity</a>
@@ -30,15 +30,18 @@
           <h1>Exercise Admin</h1>
           <p class="subheading">Manage exercises and warm-ups.</p>
         </div>
-        <div class="header-actions">
-          <a class="text-link" href="{{ url_for('exercise.home') }}">BasecampMove</a>
-        </div>
       </header>
 
       <main class="exercise-main">
-        <div class="card admin-grid">
-          <a class="primary-button" href="{{ url_for('exercise.admin_exercises') }}">Manage Exercises</a>
-          <a class="ghost-button" href="{{ url_for('exercise.admin_warmups') }}">Manage Warm-ups</a>
+        <div class="tile-grid">
+          <a class="tile tile-accent" href="{{ url_for('exercise.admin_exercises') }}">
+            <div class="tile-title"><i class="fa-solid fa-dumbbell"></i> Manage Exercises</div>
+            <div class="tile-desc">Create, edit, and delete exercises plus difficulty settings.</div>
+          </a>
+          <a class="tile" href="{{ url_for('exercise.admin_warmups') }}">
+            <div class="tile-title"><i class="fa-solid fa-fire-flame-simple"></i> Manage Warm-ups</div>
+            <div class="tile-desc">Add warmups with categories and durations.</div>
+          </a>
         </div>
       </main>
     </div>

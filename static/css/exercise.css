@@ -49,15 +49,18 @@ body {
 .brand-button {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: linear-gradient(120deg, #eef3ff, #d7e4ff);
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid #bcd0ff;
-  color: #0f3b94;
-  font-weight: 800;
+  gap: 6px;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  color: #111;
+  font-weight: 900;
   text-decoration: none;
-  box-shadow: 0 8px 18px rgba(15, 59, 148, 0.12);
+  font-size: 18px;
+}
+
+.brand-button .accent {
+  color: #2c6bed;
 }
 
 .menu-toggle {
@@ -418,7 +421,7 @@ body {
 .tile {
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 18px;
+  padding: 22px;
   background: #f9fbff;
   box-shadow: 0 8px 16px rgba(17, 24, 39, 0.05);
   display: grid;
@@ -451,6 +454,27 @@ body {
   border-color: #bcd0ff;
 }
 
+.alert {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #e7f5e8;
+  color: #1d4f2f;
+  border: 1px solid #b7dfc0;
+  margin-bottom: 12px;
+}
+
+button.icon-button {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+}
+
+button.icon-button:hover {
+  color: #c00;
+}
+
 .cta-row {
   display: flex;
   gap: 10px;
@@ -465,7 +489,7 @@ body {
   .top-nav-inner { padding: 0 12px; }
   .page-width { padding: 0 16px; }
   .menu-toggle { display: inline-flex; }
-  .brand-button { font-size: 14px; }
+  .brand-button { font-size: 16px; padding-left: 0; }
   .nav-links {
     position: fixed;
     left: 0;

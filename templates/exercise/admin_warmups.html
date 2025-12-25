@@ -12,7 +12,7 @@
   <div class="top-nav">
     <div class="page-width top-nav-inner">
       <button class="menu-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
-      <a class="brand-button" href="{{ url_for('exercise.home') }}"><i class="fa-solid fa-dumbbell"></i> BasecampMove</a>
+      <a class="brand-button" href="{{ url_for('exercise.home') }}"><span>Basecamp</span><span class="accent">Move</span></a>
       <div class="nav-links slideout">
         <a class="primary-link" href="{{ url_for('exercise.setup') }}"><i class="fa-solid fa-play"></i> Start Workout</a>
         <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Log Activity</a>
@@ -33,6 +33,9 @@
       </header>
 
       <main class="exercise-main">
+        {% if msg %}
+          <div class="alert">{{ msg }}</div>
+        {% endif %}
         <div class="card add-card">
           <h2 class="section-title">Add warm-up</h2>
           <form method="post" class="form-grid">

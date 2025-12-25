@@ -254,7 +254,7 @@ def complete():
                 "focus": state.get("focus"),
             })
         session["exercise_state"] = state
-        return redirect(url_for("exercise.complete"))
+        return redirect(url_for("exercise.complete", msg="Workout logged"))
 
     log_action(username, "exercise_complete", {
         "difficulty": state.get("difficulty"),
@@ -280,7 +280,7 @@ def workout_logs():
     if os.path.exists(log_path):
         try:
             with open(log_path, "r") as f:
-                for line in f:
+                for idx, line in enumerate(f):
                     if not line.strip():
                         continue
                     try:
@@ -291,6 +291,7 @@ def workout_logs():
                         entry["type"] = entry.get("type") or "guided"
                         entry["name"] = entry.get("name")
                         entry["notes"] = entry.get("notes")
+                        entry["_idx"] = idx
                         logs.append(entry)
                     except json.JSONDecodeError:
                         continue
@@ -299,7 +300,36 @@ def workout_logs():
 
     logs.sort(key=lambda x: x.get("started_at") or "", reverse=True)
     log_action(username, "exercise_logs_view")
-    return render_template("exercise/logs.html", logs=logs)
+    return render_template("exercise/logs.html", logs=logs, msg=request.args.get("msg"))
+
+
+@exercise_bp.route("/logs/delete", methods=["POST"])
+@admin_required
+def delete_log():
+    username = session.get("username")
+    _, _, log_path, _ = _paths()
+    idx_str = request.form.get("idx")
+    try:
+        idx = int(idx_str)
+    except (TypeError, ValueError):
+        return redirect(url_for("exercise.workout_logs", msg="Invalid log id"))
+
+    if not os.path.exists(log_path):
+        return redirect(url_for("exercise.workout_logs", msg="Log file missing"))
+
+    try:
+        with open(log_path, "r") as f:
+            lines = f.readlines()
+        if 0 <= idx < len(lines):
+            del lines[idx]
+            with open(log_path, "w") as f:
+                f.writelines(lines)
+            log_action(username, "exercise_log_deleted", {"idx": idx})
+            return redirect(url_for("exercise.workout_logs", msg="Log deleted"))
+    except OSError:
+        pass
+
+    return redirect(url_for("exercise.workout_logs", msg="Delete failed"))
 
 
 @exercise_bp.route("/progress", methods=["GET"])
@@ -416,9 +446,9 @@ def manual_log():
         }
         append_workout_log(log_path, entry)
         log_action(username, "exercise_manual_logged", {"name": name})
-        return redirect(url_for("exercise.workout_logs"))
+        return redirect(url_for("exercise.workout_logs", msg="Activity logged"))
 
-    return render_template("exercise/manual_log.html")
+    return render_template("exercise/manual_log.html", msg=request.args.get("msg"))
 
 # ───────── Admin (re-uses your admin role system) ─────────
 
@@ -446,6 +476,7 @@ def admin_exercises():
             exercises = [e for e in exercises if e.get("name") != name]
             save_json(exercises_path, exercises)
             log_action(username, "exercise_admin_exercise_deleted", {"name": name})
+            return redirect(url_for("exercise.admin_exercises", msg="Exercise deleted"))
         elif request.form.get("update") == "1":
             original_name = request.form.get("original_name")
             name = (request.form.get("name") or "").strip()
@@ -462,6 +493,7 @@ def admin_exercises():
                     break
             save_json(exercises_path, exercises)
             log_action(username, "exercise_admin_exercise_updated", {"name": name})
+            return redirect(url_for("exercise.admin_exercises", msg="Exercise updated"))
         else:
             name = (request.form.get("name") or "").strip()
             focus = (request.form.get("focus") or "mixed").strip().lower()
@@ -477,10 +509,11 @@ def admin_exercises():
                 })
                 save_json(exercises_path, exercises)
                 log_action(username, "exercise_admin_exercise_added", {"name": name})
+                return redirect(url_for("exercise.admin_exercises", msg="Exercise added"))
 
         return redirect(url_for("exercise.admin_exercises"))
 
-    return render_template("exercise/admin_exercises.html", exercises=exercises, difficulty_config=difficulty_config, daily_target=daily_target)
+    return render_template("exercise/admin_exercises.html", exercises=exercises, difficulty_config=difficulty_config, daily_target=daily_target, msg=request.args.get("msg"))
 
 @exercise_bp.route("/admin/warmups", methods=["GET", "POST"])
 @admin_required
@@ -495,6 +528,7 @@ def admin_warmups():
             warmups = [w for w in warmups if w.get("name") != name]
             save_json(warmups_path, warmups)
             log_action(username, "exercise_admin_warmup_deleted", {"name": name})
+            return redirect(url_for("exercise.admin_warmups", msg="Warm-up deleted"))
         elif request.form.get("update") == "1":
             original_name = request.form.get("original_name")
             name = (request.form.get("name") or "").strip()
@@ -511,6 +545,7 @@ def admin_warmups():
                     break
             save_json(warmups_path, warmups)
             log_action(username, "exercise_admin_warmup_updated", {"name": name})
+            return redirect(url_for("exercise.admin_warmups", msg="Warm-up updated"))
         else:
             name = (request.form.get("name") or "").strip()
             description = (request.form.get("description") or "").strip()
@@ -520,10 +555,11 @@ def admin_warmups():
                 warmups.append({"name": name, "description": description, "categories": categories, "duration_seconds": duration})
                 save_json(warmups_path, warmups)
                 log_action(username, "exercise_admin_warmup_added", {"name": name})
+                return redirect(url_for("exercise.admin_warmups", msg="Warm-up added"))
 
         return redirect(url_for("exercise.admin_warmups"))
 
-    return render_template("exercise/admin_warmups.html", warmups=warmups, warmup_categories=WARMUP_CATEGORY_OPTIONS)
+    return render_template("exercise/admin_warmups.html", warmups=warmups, warmup_categories=WARMUP_CATEGORY_OPTIONS, msg=request.args.get("msg"))
 
 
 @exercise_bp.route("/admin/settings", methods=["POST"])
@@ -548,4 +584,4 @@ def admin_settings():
 
     save_settings(config_path, settings)
     log_action(username, "exercise_admin_settings_updated", {"config": config, "daily_target": daily_target})
-    return redirect(url_for("exercise.admin_exercises"))
+    return redirect(url_for("exercise.admin_exercises", msg="Settings saved"))
