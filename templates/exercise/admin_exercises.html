@@ -8,71 +8,116 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
 </head>
 <body>
-  <div class="exercise-shell">
-    <header class="exercise-header">
-      <div>
-        <h1>Exercises</h1>
-        <p class="subheading">Add or remove exercises from the library.</p>
+  <div class="top-nav">
+    <div class="page-width top-nav-inner">
+      <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('exercise.setup') }}">Exercise</a>
       </div>
-      <div class="header-actions">
+      <div class="nav-links">
         <a class="text-link" href="{{ url_for('exercise.admin_home') }}">Admin Home</a>
       </div>
-    </header>
+    </div>
+  </div>
 
-    <main class="exercise-main">
-      <div class="card">
-        <h2 class="section-title">Add exercise</h2>
-        <form method="post" class="form-grid">
-          <label>
-            <span class="helper">Exercise name</span><br>
-            <input type="text" name="name" required style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: #0e1324; color: var(--text);">
-          </label>
-
-          <label>
-            <span class="helper">Focus</span><br>
-            <select name="focus" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: #0e1324; color: var(--text);">
-              <option value="legs">Legs</option>
-              <option value="upper">Upper</option>
-              <option value="mixed" selected>Mixed</option>
-            </select>
-          </label>
-
-          <div>
-            <span class="helper">Allowed difficulties</span>
-            <div class="option-group">
-              <label><input type="checkbox" name="difficulty_allowed" value="easy" checked><span>Easy</span></label>
-              <label><input type="checkbox" name="difficulty_allowed" value="medium" checked><span>Medium</span></label>
-              <label><input type="checkbox" name="difficulty_allowed" value="hard" checked><span>Hard</span></label>
-            </div>
-          </div>
-
-          <button class="primary-button" type="submit">Add exercise</button>
-        </form>
-      </div>
-
-      <div class="card">
-        <h2 class="section-title">Current exercises</h2>
-        <div class="admin-list">
-          {% for exercise in exercises %}
-            <div class="admin-item">
-              <div>
-                <strong>{{ exercise.name }}</strong><br>
-                <span class="helper">{{ exercise.focus|capitalize }} • {{ exercise.difficulty_allowed|join(", ") }}</span>
-              </div>
-              <form method="post">
-                <input type="hidden" name="delete" value="1">
-                <input type="hidden" name="name" value="{{ exercise.name }}">
-                <button class="ghost-button" type="submit">Delete</button>
-              </form>
-            </div>
-          {% else %}
-            <p class="helper">No exercises yet.</p>
-          {% endfor %}
+  <div class="exercise-shell">
+    <div class="page-width">
+      <header class="exercise-header">
+        <div>
+          <h1>Exercises</h1>
+          <p class="subheading">Add, edit, or delete exercises from the library.</p>
         </div>
-      </div>
-    </main>
+      </header>
+
+      <main class="exercise-main">
+        <div class="card">
+          <h2 class="section-title">Add exercise</h2>
+          <form method="post" class="form-grid">
+            <label>
+              <span class="helper">Exercise name</span><br>
+              <input class="input-field" type="text" name="name" required>
+            </label>
+
+            <label>
+              <span class="helper">Description</span><br>
+              <textarea class="input-field" name="description" rows="3" placeholder="What should the user focus on?"></textarea>
+            </label>
+
+            <label>
+              <span class="helper">Focus</span><br>
+              <select class="input-field" name="focus">
+                <option value="legs">Legs</option>
+                <option value="upper">Upper</option>
+                <option value="mixed" selected>Mixed</option>
+              </select>
+            </label>
+
+            <div>
+              <span class="helper">Allowed difficulties</span>
+              <div class="option-group">
+                <label><input type="checkbox" name="difficulty_allowed" value="easy" checked><span>Easy</span></label>
+                <label><input type="checkbox" name="difficulty_allowed" value="medium" checked><span>Medium</span></label>
+                <label><input type="checkbox" name="difficulty_allowed" value="hard" checked><span>Hard</span></label>
+              </div>
+            </div>
+
+            <button class="primary-button" type="submit">Add exercise</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Current exercises</h2>
+          <div class="admin-list">
+            {% for exercise in exercises %}
+              <div class="admin-item">
+                <form method="post" class="form-grid">
+                  <input type="hidden" name="update" value="1">
+                  <input type="hidden" name="original_name" value="{{ exercise.name }}">
+                  <label>
+                    <span class="helper">Name</span><br>
+                    <input class="input-field" type="text" name="name" value="{{ exercise.name }}" required>
+                  </label>
+                  <label>
+                    <span class="helper">Description</span><br>
+                    <textarea class="input-field" name="description" rows="2">{{ exercise.description }}</textarea>
+                  </label>
+                  <label>
+                    <span class="helper">Focus</span><br>
+                    <select class="input-field" name="focus">
+                      <option value="legs" {% if exercise.focus == "legs" %}selected{% endif %}>Legs</option>
+                      <option value="upper" {% if exercise.focus == "upper" %}selected{% endif %}>Upper</option>
+                      <option value="mixed" {% if exercise.focus == "mixed" %}selected{% endif %}>Mixed</option>
+                    </select>
+                  </label>
+                  <div>
+                    <span class="helper">Allowed difficulties</span>
+                    <div class="option-group">
+                      {% for diff in ["easy", "medium", "hard"] %}
+                        <label>
+                          <input type="checkbox" name="difficulty_allowed" value="{{ diff }}" {% if diff in exercise.difficulty_allowed %}checked{% endif %}>
+                          <span>{{ diff.capitalize() }}</span>
+                        </label>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="button-row">
+                    <button class="primary-button" type="submit">Save changes</button>
+                  </div>
+                </form>
+                <form method="post" onsubmit="return confirm('Delete {{ exercise.name }}?');">
+                  <input type="hidden" name="delete" value="1">
+                  <input type="hidden" name="name" value="{{ exercise.name }}">
+                  <button class="ghost-button" type="submit">Delete</button>
+                </form>
+              </div>
+            {% else %}
+              <p class="helper">No exercises yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </main>
+    </div>
   </div>
 </body>
 </html>
-
 

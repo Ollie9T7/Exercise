@@ -8,29 +8,52 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
 </head>
 <body>
-  <div class="exercise-shell">
-    <header class="exercise-header">
-      <div>
-        <h1>Warm-up</h1>
-        <p class="subheading">Get the body ready before the main set.</p>
+  <div class="top-nav">
+    <div class="page-width top-nav-inner">
+      <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('exercise.setup') }}">Restart</a>
       </div>
-      <div class="header-actions">
-        <span class="steps-pill">Difficulty: {{ state.difficulty|capitalize }}</span>
-        <span class="steps-pill">Focus: {{ state.focus|capitalize }}</span>
+      <div class="nav-links">
+        <span class="pill">Difficulty: {{ state.difficulty|capitalize }}</span>
+        <span class="pill">Focus: {{ state.focus|capitalize }}</span>
       </div>
-    </header>
+    </div>
+  </div>
 
-    <main class="exercise-main">
-      <div class="card workout-step">
-        <h2>Warm-up: {{ state.warmup }}</h2>
-        <p class="detail">2 minutes</p>
-        <form method="post">
-          <button class="primary-button" type="submit">Next</button>
-        </form>
-      </div>
-    </main>
+  <div class="exercise-shell">
+    <div class="page-width">
+      <header class="exercise-header">
+        <div>
+          <h1>Warm-up</h1>
+          <p class="subheading">Get moving before the main set.</p>
+        </div>
+      </header>
+
+      <main class="exercise-main">
+        <div class="card workout-step">
+          <div class="header-actions">
+            <span class="pill">~2 minutes</span>
+            {% if state.warmup_categories %}
+              <div class="chips">
+                {% for cat in state.warmup_categories %}
+                  <span class="chip">{{ cat|capitalize }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          <h2>{{ state.warmup }}</h2>
+          {% if state.warmup_description %}
+            <div class="description-box">{{ state.warmup_description }}</div>
+          {% endif %}
+
+          <form method="post" class="button-row">
+            <button class="primary-button" type="submit">Start workout</button>
+          </form>
+        </div>
+      </main>
+    </div>
   </div>
 </body>
 </html>
-
 

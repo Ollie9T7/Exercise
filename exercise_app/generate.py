@@ -6,6 +6,7 @@ DIFF_RULES = {
     "hard":   {"count": 8, "rep_min": 10, "rep_max": 20},
 }
 
+
 def generate_workout(exercises: list, difficulty: str, focus: str):
     rules = DIFF_RULES[difficulty]
 
@@ -30,7 +31,13 @@ def generate_workout(exercises: list, difficulty: str, focus: str):
 
     for idx, ex in enumerate(chosen, start=1):
         reps = random.randint(rules["rep_min"], rules["rep_max"])
-        step = {"type": "exercise", "name": ex["name"], "reps": reps}
+        step = {
+            "type": "exercise",
+            "name": ex["name"],
+            "reps": reps,
+            "description": ex.get("description", ""),
+            "status": None,
+        }
         exercise_steps.append(step)
 
     # Insert breaks after every 2 exercises

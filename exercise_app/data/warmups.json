@@ -1,11 +1,32 @@
 [
   {
-    "name": "March on the spot"
+    "name": "March on the spot",
+    "description": "Gentle marching to raise heart rate and loosen hips.",
+    "categories": ["cardio", "full-body"]
   },
   {
-    "name": "Arm circles"
+    "name": "Arm circles",
+    "description": "Small to large circles forwards and backwards to warm shoulders.",
+    "categories": ["upper", "mobility"]
   },
   {
-    "name": "Hip circles"
+    "name": "Hip circles",
+    "description": "Hands on hips, draw circles both directions to mobilise hips and lower back.",
+    "categories": ["legs", "mobility"]
+  },
+  {
+    "name": "Dynamic hamstring reaches",
+    "description": "Toe touches with a flat back, alternating legs to wake up hamstrings.",
+    "categories": ["legs", "mobility"]
+  },
+  {
+    "name": "Jumping jacks",
+    "description": "Light cardio to get blood flowing before heavier efforts.",
+    "categories": ["cardio", "full-body"]
+  },
+  {
+    "name": "Band pull-aparts",
+    "description": "Light band tension, squeeze shoulder blades together for upper back activation.",
+    "categories": ["upper", "mobility"]
   }
 ]

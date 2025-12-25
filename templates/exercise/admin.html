@@ -8,26 +8,32 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
 </head>
 <body>
-  <div class="exercise-shell">
-    <header class="exercise-header">
-      <div>
-        <h1>Exercise Admin</h1>
-        <p class="subheading">Manage exercises and warm-ups.</p>
+  <div class="top-nav">
+    <div class="page-width top-nav-inner">
+      <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('exercise.setup') }}">Exercise</a>
       </div>
-      <div class="header-actions">
-        <a class="text-link" href="{{ url_for('exercise.setup') }}">Back to Exercise</a>
-        <a class="text-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-      </div>
-    </header>
+    </div>
+  </div>
 
-    <main class="exercise-main">
-      <div class="card admin-grid">
-        <a class="primary-button" href="{{ url_for('exercise.admin_exercises') }}">Manage Exercises</a>
-        <a class="ghost-button" href="{{ url_for('exercise.admin_warmups') }}">Manage Warm-ups</a>
-      </div>
-    </main>
+  <div class="exercise-shell">
+    <div class="page-width">
+      <header class="exercise-header">
+        <div>
+          <h1>Exercise Admin</h1>
+          <p class="subheading">Manage exercises and warm-ups.</p>
+        </div>
+      </header>
+
+      <main class="exercise-main">
+        <div class="card admin-grid">
+          <a class="primary-button" href="{{ url_for('exercise.admin_exercises') }}">Manage Exercises</a>
+          <a class="ghost-button" href="{{ url_for('exercise.admin_warmups') }}">Manage Warm-ups</a>
+        </div>
+      </main>
+    </div>
   </div>
 </body>
 </html>
-
 

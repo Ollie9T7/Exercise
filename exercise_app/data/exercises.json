@@ -2,48 +2,56 @@
   {
     "name": "Bodyweight Squats",
     "focus": "legs",
-    "difficulty_allowed": ["easy", "medium", "hard"]
+    "difficulty_allowed": ["easy", "medium", "hard"],
+    "description": "Feet shoulder-width apart, sit back and keep the chest tall."
   },
   {
     "name": "Lunges",
     "focus": "legs",
-    "difficulty_allowed": ["medium", "hard"]
+    "difficulty_allowed": ["medium", "hard"],
+    "description": "Step forward, lower the back knee towards the floor, drive up through the front heel."
   },
   {
     "name": "Glute Bridges",
     "focus": "legs",
-    "difficulty_allowed": ["easy", "medium", "hard"]
+    "difficulty_allowed": ["easy", "medium", "hard"],
+    "description": "Heels close to glutes, squeeze at the top, lower under control."
   },
   {
     "name": "Press-ups",
     "focus": "upper",
-    "difficulty_allowed": ["easy", "medium", "hard"]
+    "difficulty_allowed": ["easy", "medium", "hard"],
+    "description": "Hands under shoulders, body in one line, lower chest then press back."
   },
   {
     "name": "Incline Press-ups",
     "focus": "upper",
-    "difficulty_allowed": ["easy", "medium"]
+    "difficulty_allowed": ["easy", "medium"],
+    "description": "Hands on a bench or table to reduce load while keeping a straight body line."
   },
   {
     "name": "Tricep Dips (Chair)",
     "focus": "upper",
-    "difficulty_allowed": ["medium", "hard"]
+    "difficulty_allowed": ["medium", "hard"],
+    "description": "Hands behind on a chair, elbows back, lower under control then drive up."
   },
   {
     "name": "Mountain Climbers",
     "focus": "mixed",
-    "difficulty_allowed": ["easy", "medium", "hard"]
+    "difficulty_allowed": ["easy", "medium", "hard"],
+    "description": "High plank position, drive knees to chest alternately while keeping hips steady."
   },
   {
     "name": "Burpees",
     "focus": "mixed",
-    "difficulty_allowed": ["hard"]
+    "difficulty_allowed": ["hard"],
+    "description": "Squat, kick back to plank, return to squat, then jump explosively."
   },
   {
     "name": "Plank Shoulder Taps",
     "focus": "mixed",
-    "difficulty_allowed": ["medium", "hard"]
+    "difficulty_allowed": ["medium", "hard"],
+    "description": "High plank, tap opposite shoulder while minimising hip sway."
   }
 ]
-
 

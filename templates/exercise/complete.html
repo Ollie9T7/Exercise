@@ -8,46 +8,69 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
 </head>
 <body>
-  <div class="exercise-shell">
-    <header class="exercise-header">
-      <div>
-        <h1>Workout complete</h1>
-        <p class="subheading">Nice work, {{ state.user }}.</p>
+  <div class="top-nav">
+    <div class="page-width top-nav-inner">
+      <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('exercise.setup') }}">Plan another</a>
       </div>
-      <div class="header-actions">
-        <a class="text-link" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+      <div class="nav-links">
+        <span class="pill">{{ state.difficulty|capitalize }} · {{ state.focus|capitalize }}</span>
       </div>
-    </header>
+    </div>
+  </div>
 
-    <main class="exercise-main">
-      <div class="card">
-        <h2 class="section-title">Summary</h2>
-        <ul class="list">
-          <li>
-            <strong>Warm-up</strong>
-            <span>{{ state.warmup }} — 2 minutes</span>
-          </li>
-          {% for step in state.steps %}
+  <div class="exercise-shell">
+    <div class="page-width">
+      <header class="exercise-header">
+        <div>
+          <h1>Workout complete</h1>
+          <p class="subheading">Nice work, {{ state.user }}.</p>
+        </div>
+      </header>
+
+      <main class="exercise-main">
+        <div class="card">
+          <h2 class="section-title">Summary</h2>
+          <p class="helper">Start: {{ state.started_at }} · End: {{ state.ended_at }}</p>
+          <ul class="list">
             <li>
-              <strong>{{ step.name }}</strong>
-              {% if step.type == "break" %}
-                <span>{{ step.detail }}</span>
-              {% else %}
-                <span>{{ step.reps }} reps</span>
+              <strong>Warm-up</strong>
+              <span>{{ state.warmup }}</span>
+              {% if state.warmup_description %}
+                <span>{{ state.warmup_description }}</span>
               {% endif %}
             </li>
-          {% endfor %}
-        </ul>
-      </div>
+            {% for step in state.steps %}
+              <li>
+                <strong>{{ step.name }}</strong>
+                {% if step.type == "break" %}
+                  <span>{{ step.detail }}</span>
+                {% else %}
+                  <span>{{ step.reps }} reps</span>
+                {% endif %}
+                {% if step.description %}
+                  <span>{{ step.description }}</span>
+                {% endif %}
+                {% if step.status %}
+                  <span class="chip">{{ step.status|capitalize }}</span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
 
-      <div class="card">
-        <form action="{{ url_for('exercise.setup') }}" method="get">
-          <button class="primary-button" type="submit">Start again</button>
-        </form>
-      </div>
-    </main>
+        <div class="card">
+          {% if state.logged %}
+            <p class="helper">Workout logged for reporting.</p>
+          {% endif %}
+          <form action="{{ url_for('exercise.complete') }}" method="post">
+            <button class="primary-button" type="submit">Complete workout</button>
+          </form>
+        </div>
+      </main>
+    </div>
   </div>
 </body>
 </html>
-
 

@@ -8,36 +8,57 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
 </head>
 <body>
+  <div class="top-nav">
+    <div class="page-width top-nav-inner">
+      <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('exercise.setup') }}">Restart</a>
+      </div>
+      <div class="nav-links">
+        <span class="pill">Step {{ index + 1 }} of {{ total }}</span>
+        <span class="pill">Difficulty: {{ state.difficulty|capitalize }}</span>
+        <span class="pill">Focus: {{ state.focus|capitalize }}</span>
+      </div>
+    </div>
+  </div>
+
   <div class="exercise-shell">
-    <header class="exercise-header">
-      <div>
-        <h1>Workout</h1>
-        <p class="subheading">Step {{ index + 1 }} of {{ total }}</p>
-      </div>
-      <div class="header-actions">
-        <span class="steps-pill">Difficulty: {{ state.difficulty|capitalize }}</span>
-        <span class="steps-pill">Focus: {{ state.focus|capitalize }}</span>
-      </div>
-    </header>
+    <div class="page-width">
+      <header class="exercise-header">
+        <div>
+          <h1>Workout</h1>
+          <p class="subheading">Stay on pace and track each step.</p>
+        </div>
+      </header>
 
-    <main class="exercise-main">
-      <div class="card workout-step">
-        {% if step.type == "break" %}
-          <h2>{{ step.name }}</h2>
-          <p class="detail">{{ step.detail }}</p>
-        {% else %}
-          <h2>{{ step.name }}</h2>
-          <p class="detail">Reps: {{ step.reps }}</p>
-        {% endif %}
+      <main class="exercise-main">
+        <div class="card workout-step">
+          {% if step.type == "break" %}
+            <div class="header-actions">
+              <span class="pill">Break</span>
+              <span class="pill">{{ step.detail }}</span>
+            </div>
+            <h2>{{ step.name }}</h2>
+            <div class="description-box">Breathe, shake out tension, and reset posture.</div>
+          {% else %}
+            <div class="header-actions">
+              <span class="pill">Exercise</span>
+            </div>
+            <p class="reps-focus">{{ step.reps }}</p>
+            <h2>{{ step.name }}</h2>
+            {% if step.description %}
+              <div class="description-box">{{ step.description }}</div>
+            {% endif %}
+          {% endif %}
 
-        <form method="post" class="button-row">
-          <button class="primary-button" type="submit" name="action" value="continue">Continue</button>
-          <button class="ghost-button" type="submit" name="action" value="skip">Skip</button>
-        </form>
-      </div>
-    </main>
+          <form method="post" class="button-row">
+            <button class="primary-button" type="submit" name="action" value="continue">Completed</button>
+            <button class="ghost-button" type="submit" name="action" value="skip">Skip</button>
+          </form>
+        </div>
+      </main>
+    </div>
   </div>
 </body>
 </html>
-
 
