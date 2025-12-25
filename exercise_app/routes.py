@@ -22,6 +22,7 @@ from basecamp_core import login_required, admin_required, log_action, BASE_DIR
 
 
 WARMUP_CATEGORY_OPTIONS = ["cardio", "upper", "legs", "full-body", "mobility", "core", "stretch", "mixed"]
+DAILY_MINUTES_TARGET = 15
 
 
 def _paths():
@@ -81,6 +82,7 @@ def _append_workout_log_entry(state: dict):
         "warmups": state.get("warmups", []),
         "steps": state.get("steps", []),
         "rating": state.get("rating"),
+        "type": "guided",
     }
     append_workout_log(log_path, entry)
     return entry
@@ -152,6 +154,14 @@ def setup():
 
     # GET
     return render_template("exercise/setup.html", user=_get_logged_in_name())
+
+
+@exercise_bp.route("/home", methods=["GET"])
+@login_required
+def home():
+    username = session.get("username")
+    log_action(username, "exercise_home_view")
+    return render_template("exercise/home.html")
 
 @exercise_bp.route("/warmup", methods=["GET", "POST"])
 @login_required
@@ -276,6 +286,9 @@ def workout_logs():
                         entry["started_display"] = _format_timestamp(entry.get("started_at"))
                         entry["ended_display"] = _format_timestamp(entry.get("ended_at"))
                         entry["duration_minutes"] = _calc_duration_minutes(entry.get("started_at"), entry.get("ended_at"))
+                        entry["type"] = entry.get("type") or "guided"
+                        entry["name"] = entry.get("name")
+                        entry["notes"] = entry.get("notes")
                         logs.append(entry)
                     except json.JSONDecodeError:
                         continue
@@ -332,7 +345,77 @@ def progress():
             pass
 
     log_action(username, "exercise_progress_view")
-    return render_template("exercise/progress.html", counters=counters)
+    # Build a 7-day streak/goal view
+    daily_target = DAILY_MINUTES_TARGET
+    past_days = []
+    for i in range(6, -1, -1):
+        day = now - timedelta(days=i)
+        day_key = day.strftime("%Y-%m-%d")
+        minutes = 0
+        if os.path.exists(log_path):
+            try:
+                with open(log_path, "r") as f:
+                    for line in f:
+                        if not line.strip():
+                            continue
+                        entry = json.loads(line)
+                        start_iso = entry.get("started_at")
+                        end_iso = entry.get("ended_at")
+                        if not start_iso or not end_iso:
+                            continue
+                        entry_day = start_iso.split("T")[0]
+                        if entry_day == day_key:
+                            minutes += _calc_duration_minutes(start_iso, end_iso)
+            except Exception:
+                pass
+        past_days.append({
+            "label": day.strftime("%a"),
+            "minutes": minutes,
+            "target": daily_target,
+            "over": minutes - daily_target,
+            "date_label": day.strftime("%d/%m"),
+        })
+
+    return render_template("exercise/progress.html", counters=counters, past_days=past_days, daily_target=daily_target)
+
+
+@exercise_bp.route("/manual-log", methods=["GET", "POST"])
+@login_required
+def manual_log():
+    username = session.get("username")
+    exercises_path, warmups_path, log_path, config_path = _paths()
+
+    if request.method == "POST":
+        name = (request.form.get("name") or "").strip()
+        started = request.form.get("started_at")
+        ended = request.form.get("ended_at")
+        notes = (request.form.get("notes") or "").strip()
+
+        try:
+            start_dt = datetime.fromisoformat(started)
+            end_dt = datetime.fromisoformat(ended)
+            if end_dt < start_dt:
+                end_dt = start_dt
+        except Exception:
+            start_dt = datetime.now()
+            end_dt = start_dt
+
+        entry = {
+            "user": session.get("name") or session.get("username"),
+            "name": name or "Manual activity",
+            "type": "manual",
+            "started_at": start_dt.isoformat(),
+            "ended_at": end_dt.isoformat(),
+            "warmups": [],
+            "steps": [],
+            "rating": None,
+            "notes": notes,
+        }
+        append_workout_log(log_path, entry)
+        log_action(username, "exercise_manual_logged", {"name": name})
+        return redirect(url_for("exercise.workout_logs"))
+
+    return render_template("exercise/manual_log.html")
 
 # ───────── Admin (re-uses your admin role system) ─────────
 

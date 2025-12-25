@@ -11,7 +11,7 @@
   <div class="top-nav">
     <div class="page-width top-nav-inner">
       <div class="nav-links">
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('exercise.home') }}">BasecampMove</a>
         <a href="{{ url_for('exercise.setup') }}">Exercise</a>
       </div>
     </div>
@@ -23,6 +23,9 @@
         <div>
           <h1>Exercise Admin</h1>
           <p class="subheading">Manage exercises and warm-ups.</p>
+        </div>
+        <div class="header-actions">
+          <a class="text-link" href="{{ url_for('exercise.home') }}">BasecampMove</a>
         </div>
       </header>
 
@@ -36,4 +39,3 @@
   </div>
 </body>
 </html>
-

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Log Activity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+</head>
+<body>
+  <div class="top-nav">
+    <div class="page-width top-nav-inner">
+      <div class="nav-links">
+        <a href="{{ url_for('exercise.home') }}">BasecampMove</a>
+        <a href="{{ url_for('exercise.setup') }}">Start Workout</a>
+        <a href="{{ url_for('exercise.progress') }}">Progress</a>
+        <a href="{{ url_for('exercise.workout_logs') }}">Logs</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-shell">
+    <div class="page-width">
+      <header class="exercise-header">
+        <div>
+          <h1>Log other activity</h1>
+          <p class="subheading">Capture walks, rides, or any movement done outside the guided flow.</p>
+        </div>
+      </header>
+
+      <main class="exercise-main">
+        <div class="card add-card">
+          <form method="post" class="form-grid">
+            <label>
+              <span class="helper">Activity name</span><br>
+              <input class="input-field" type="text" name="name" placeholder="e.g. Walk, Run, Ride" required>
+            </label>
+            <label>
+              <span class="helper">Start time</span><br>
+              <input class="input-field" type="datetime-local" name="started_at" required>
+            </label>
+            <label>
+              <span class="helper">End time</span><br>
+              <input class="input-field" type="datetime-local" name="ended_at" required>
+            </label>
+            <label>
+              <span class="helper">Notes (optional)</span><br>
+              <textarea class="input-field" name="notes" rows="3" placeholder="How did it feel? Route? Conditions?"></textarea>
+            </label>
+            <div class="button-row">
+              <button class="primary-button" type="submit">Log activity</button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

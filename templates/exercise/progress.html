@@ -25,6 +25,9 @@
           <h1>Progress</h1>
           <p class="subheading">See your commitment this week, month, and year.</p>
         </div>
+        <div class="header-actions">
+          <a class="text-link" href="{{ url_for('exercise.home') }}">BasecampMove</a>
+        </div>
       </header>
 
       <main class="exercise-main">
@@ -36,6 +39,23 @@
               <p class="helper">{{ data.count }} workouts</p>
             </div>
           {% endfor %}
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Last 7 days vs daily target ({{ daily_target }} min)</h2>
+          <div class="progress-bars">
+            {% for day in past_days %}
+              <div class="progress-row">
+                <div class="progress-label">{{ day.label }} ({{ day.date_label }})</div>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: {{ [ (day.minutes / day.target * 100), 120 ] | min }}%;">
+                    <span class="progress-text">{{ day.minutes }} min</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <p class="helper">Bars may exceed 100% if you went over the daily target.</p>
         </div>
       </main>
     </div>

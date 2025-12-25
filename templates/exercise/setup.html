@@ -11,7 +11,7 @@
   <div class="top-nav">
     <div class="page-width top-nav-inner">
       <div class="nav-links">
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('exercise.home') }}">BasecampMove</a>
         <a href="{{ url_for('exercise.admin_home') }}">Exercise Admin</a>
         <a href="{{ url_for('exercise.progress') }}">Progress</a>
         <a href="{{ url_for('exercise.workout_logs') }}">Workout Logs</a>
@@ -28,6 +28,9 @@
         <div>
           <h1>Plan your workout</h1>
           <p class="subheading">Choose an intensity and focus — we’ll build the steps for you.</p>
+        </div>
+        <div class="header-actions">
+          <a class="text-link" href="{{ url_for('exercise.home') }}">BasecampMove</a>
         </div>
       </header>
 

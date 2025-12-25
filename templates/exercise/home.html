@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Basecamp Move</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+</head>
+<body>
+  <div class="top-nav">
+    <div class="page-width top-nav-inner">
+      <div class="nav-links">
+        <a href="{{ url_for('exercise.home') }}">BasecampMove</a>
+        <a href="{{ url_for('exercise.setup') }}">Start Workout</a>
+        <a href="{{ url_for('exercise.progress') }}">Progress</a>
+        <a href="{{ url_for('exercise.workout_logs') }}">Logs</a>
+        <a href="{{ url_for('exercise.manual_log') }}">Log Activity</a>
+        <a href="{{ url_for('exercise.admin_home') }}">Admin</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-shell">
+    <div class="page-width">
+      <header class="exercise-header">
+        <div>
+          <h1>BasecampMove</h1>
+          <p class="subheading">Jump into a workout, check progress, or log activity.</p>
+        </div>
+      </header>
+
+      <main class="exercise-main">
+        <div class="card" style="display:grid; gap:16px;">
+          <a class="primary-button" href="{{ url_for('exercise.setup') }}">Start a workout</a>
+          <a class="primary-button" href="{{ url_for('exercise.manual_log') }}">Log other activity</a>
+          <a class="ghost-button" href="{{ url_for('exercise.progress') }}">View progress</a>
+          <a class="ghost-button" href="{{ url_for('exercise.workout_logs') }}">View logs</a>
+          <a class="ghost-button" href="{{ url_for('exercise.admin_home') }}">Admin settings</a>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
