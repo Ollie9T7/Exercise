@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
   <script defer src="{{ url_for('static', filename='js/nav.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/timer.js') }}"></script>
 </head>
 <body>
   <div class="top-nav">
@@ -14,13 +15,7 @@
       <button class="menu-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
       <a class="brand-button" href="{{ url_for('exercise.home') }}"><span>Basecamp</span><span class="accent">Move</span></a>
       <div class="nav-links slideout">
-        <a class="primary-link" href="{{ url_for('exercise.setup') }}"><i class="fa-solid fa-play"></i> Start Workout</a>
-        <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Record Activity</a>
-        <a href="{{ url_for('exercise.progress') }}"><i class="fa-solid fa-chart-line"></i> Progress</a>
-        <a href="{{ url_for('exercise.workout_logs') }}"><i class="fa-solid fa-clock-rotate-left"></i> Workout Logs</a>
-        <span class="pill">Step {{ index + 1 }} of {{ total }}</span>
-        <span class="pill">Difficulty: {{ state.difficulty|capitalize }}</span>
-        <span class="pill">Focus: {{ state.focus|capitalize }}</span>
+        <span class="helper">Finish your workout before navigating away to keep your progress.</span>
       </div>
     </div>
   </div>
@@ -34,6 +29,14 @@
         </div>
       </header>
 
+      <div class="card" style="margin-top:0; margin-bottom:12px;">
+        <div class="header-actions" style="justify-content:flex-start; gap:8px;">
+          <span class="pill">Step {{ index + 1 }} of {{ total }}</span>
+          <span class="pill">Difficulty: {{ state.difficulty|capitalize }}</span>
+          <span class="pill">Focus: {{ state.focus|capitalize }}</span>
+        </div>
+      </div>
+
       <main class="exercise-main">
         <div class="card workout-step">
           {% if step.type == "break" %}
@@ -43,6 +46,11 @@
             </div>
             <h2>{{ step.name }}</h2>
             <div class="description-box">Breathe, shake out tension, and reset posture.</div>
+            {% set break_seconds = (step.detail|int) if (step.detail|int) else 60 %}
+            <div class="timer">
+              <button class="ghost-button timer-start" type="button" data-duration="{{ break_seconds }}">Start timer</button>
+              <span class="timer-display"></span>
+            </div>
           {% else %}
             <div class="header-actions">
               <span class="pill">Exercise</span>
@@ -52,6 +60,10 @@
             {% if step.description %}
               <div class="description-box">{{ step.description }}</div>
             {% endif %}
+            <div class="timer">
+              <button class="ghost-button timer-start" type="button" data-duration="60">Start 60s timer</button>
+              <span class="timer-display"></span>
+            </div>
           {% endif %}
 
           <form method="post" class="button-row">
