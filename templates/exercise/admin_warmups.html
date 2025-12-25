@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Manage Warm-ups</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+</head>
+<body>
+  <div class="exercise-shell">
+    <header class="exercise-header">
+      <div>
+        <h1>Warm-ups</h1>
+        <p class="subheading">Add or remove warm-up moves.</p>
+      </div>
+      <div class="header-actions">
+        <a class="text-link" href="{{ url_for('exercise.admin_home') }}">Admin Home</a>
+      </div>
+    </header>
+
+    <main class="exercise-main">
+      <div class="card">
+        <h2 class="section-title">Add warm-up</h2>
+        <form method="post" class="form-grid">
+          <label>
+            <span class="helper">Warm-up name</span><br>
+            <input type="text" name="name" required style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: #0e1324; color: var(--text);">
+          </label>
+          <button class="primary-button" type="submit">Add warm-up</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Current warm-ups</h2>
+        <div class="admin-list">
+          {% for warmup in warmups %}
+            <div class="admin-item">
+              <strong>{{ warmup.name }}</strong>
+              <form method="post">
+                <input type="hidden" name="delete" value="1">
+                <input type="hidden" name="name" value="{{ warmup.name }}">
+                <button class="ghost-button" type="submit">Delete</button>
+              </form>
+            </div>
+          {% else %}
+            <p class="helper">No warm-ups yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
+
+

@@ -1,0 +1,17 @@
+{
+  "noisy": {
+    "password_hash": "scrypt:32768:8:1$4SmmfXHerweNi3ax$08e73de78668bc79e80234c262bf20ab0c4760f946289f0b2a324b421ee18887bfb79e4f3a1a464e4038a712403e2bd8ed1df6ee5e9fd4091268661396bd410b",
+    "role": "admin",
+    "name": "Noisy"
+  },
+  "DC": {
+    "password_hash": "scrypt:32768:8:1$rvWt5646B5NzpAHB$2d15a95c82f211132bbdb3dfbc8c9dbcaf0d0586d1091fa4104c27eec842a7d76919dd36cc81a434f4ec3b101834e6216edaa9361e9a038b85f8294f7a00378c",
+    "role": "user",
+    "name": "David"
+  },
+  "JW": {
+    "password_hash": "scrypt:32768:8:1$m2LuJshl6dyt5ZYY$709d87f59557c16e4cb2a77394f767ae858fced3126653e120531990469258f1e2aed25a7246f32ee9b847df1b21f96d950f3f84a55da0e44125c07ec53a77d7",
+    "role": "user",
+    "name": "Jacqui"
+  }
+}

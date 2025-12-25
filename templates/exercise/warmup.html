@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Warm-up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+</head>
+<body>
+  <div class="exercise-shell">
+    <header class="exercise-header">
+      <div>
+        <h1>Warm-up</h1>
+        <p class="subheading">Get the body ready before the main set.</p>
+      </div>
+      <div class="header-actions">
+        <span class="steps-pill">Difficulty: {{ state.difficulty|capitalize }}</span>
+        <span class="steps-pill">Focus: {{ state.focus|capitalize }}</span>
+      </div>
+    </header>
+
+    <main class="exercise-main">
+      <div class="card workout-step">
+        <h2>Warm-up: {{ state.warmup }}</h2>
+        <p class="detail">2 minutes</p>
+        <form method="post">
+          <button class="primary-button" type="submit">Next</button>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
+
+

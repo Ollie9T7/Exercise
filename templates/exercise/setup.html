@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Exercise Setup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+</head>
+<body>
+  <div class="exercise-shell">
+    <header class="exercise-header">
+      <div>
+        <h1>Welcome, {{ user }}.</h1>
+        <p class="subheading">Build a quick routine tailored to your day.</p>
+      </div>
+      <div class="header-actions">
+        <a class="text-link" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+        <a class="text-link" href="{{ url_for('exercise.admin_home') }}">Admin</a>
+      </div>
+    </header>
+
+    <main class="exercise-main">
+      <form method="post" class="card form-grid">
+        <div>
+          <h2 class="section-title">Choose your difficulty</h2>
+          <div class="option-group">
+            <label><input type="radio" name="difficulty" value="easy" checked><span>Easy — light activation</span></label>
+            <label><input type="radio" name="difficulty" value="medium"><span>Medium — moderate effort</span></label>
+            <label><input type="radio" name="difficulty" value="hard"><span>Hard — full push</span></label>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="section-title">Choose a focus</h2>
+          <div class="option-group">
+            <label><input type="radio" name="focus" value="legs" checked><span>Legs</span></label>
+            <label><input type="radio" name="focus" value="upper"><span>Upper body</span></label>
+            <label><input type="radio" name="focus" value="mixed"><span>Mixed</span></label>
+          </div>
+          <p class="helper">Mixed focus blends leg and upper body moves.</p>
+        </div>
+
+        <button class="primary-button" type="submit">Generate workout</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>
+
+

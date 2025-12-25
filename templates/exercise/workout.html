@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Workout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+</head>
+<body>
+  <div class="exercise-shell">
+    <header class="exercise-header">
+      <div>
+        <h1>Workout</h1>
+        <p class="subheading">Step {{ index + 1 }} of {{ total }}</p>
+      </div>
+      <div class="header-actions">
+        <span class="steps-pill">Difficulty: {{ state.difficulty|capitalize }}</span>
+        <span class="steps-pill">Focus: {{ state.focus|capitalize }}</span>
+      </div>
+    </header>
+
+    <main class="exercise-main">
+      <div class="card workout-step">
+        {% if step.type == "break" %}
+          <h2>{{ step.name }}</h2>
+          <p class="detail">{{ step.detail }}</p>
+        {% else %}
+          <h2>{{ step.name }}</h2>
+          <p class="detail">Reps: {{ step.reps }}</p>
+        {% endif %}
+
+        <form method="post" class="button-row">
+          <button class="primary-button" type="submit" name="action" value="continue">Continue</button>
+          <button class="ghost-button" type="submit" name="action" value="skip">Skip</button>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
+
+
