@@ -6,17 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+  <script defer src="{{ url_for('static', filename='js/nav.js') }}"></script>
 </head>
 <body>
   <div class="top-nav">
     <div class="page-width top-nav-inner">
-      <div class="nav-links">
-        <a href="{{ url_for('exercise.home') }}">BasecampMove</a>
-        <a href="{{ url_for('exercise.setup') }}">Start Workout</a>
-        <a href="{{ url_for('exercise.progress') }}">Progress</a>
-        <a href="{{ url_for('exercise.workout_logs') }}">Logs</a>
-        <a href="{{ url_for('exercise.manual_log') }}">Log Activity</a>
-        <a href="{{ url_for('exercise.admin_home') }}">Admin</a>
+      <button class="menu-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+      <a class="brand-button" href="{{ url_for('exercise.home') }}"><i class="fa-solid fa-dumbbell"></i> BasecampMove</a>
+      <div class="nav-links slideout">
+        <a class="primary-link" href="{{ url_for('exercise.setup') }}"><i class="fa-solid fa-play"></i> Start Workout</a>
+        <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Log Activity</a>
+        <a href="{{ url_for('exercise.progress') }}"><i class="fa-solid fa-chart-line"></i> Progress</a>
+        <a href="{{ url_for('exercise.workout_logs') }}"><i class="fa-solid fa-clock-rotate-left"></i> Logs</a>
+        <a href="{{ url_for('exercise.admin_home') }}"><i class="fa-solid fa-gear"></i> Admin</a>
       </div>
     </div>
   </div>
@@ -31,12 +33,27 @@
       </header>
 
       <main class="exercise-main">
-        <div class="card" style="display:grid; gap:16px;">
-          <a class="primary-button" href="{{ url_for('exercise.setup') }}">Start a workout</a>
-          <a class="primary-button" href="{{ url_for('exercise.manual_log') }}">Log other activity</a>
-          <a class="ghost-button" href="{{ url_for('exercise.progress') }}">View progress</a>
-          <a class="ghost-button" href="{{ url_for('exercise.workout_logs') }}">View logs</a>
-          <a class="ghost-button" href="{{ url_for('exercise.admin_home') }}">Admin settings</a>
+        <div class="tile-grid">
+          <a class="tile tile-accent" href="{{ url_for('exercise.setup') }}">
+            <div class="tile-title"><i class="fa-solid fa-play"></i> Start a workout</div>
+            <div class="tile-desc">Generate a routine tailored to your focus and difficulty.</div>
+          </a>
+          <a class="tile tile-accent" href="{{ url_for('exercise.manual_log') }}">
+            <div class="tile-title"><i class="fa-solid fa-person-walking"></i> Log an activity</div>
+            <div class="tile-desc">Record walks, rides, or any activity done outside the app.</div>
+          </a>
+          <a class="tile" href="{{ url_for('exercise.progress') }}">
+            <div class="tile-title"><i class="fa-solid fa-chart-line"></i> Progress</div>
+            <div class="tile-desc">See weekly, monthly, and yearly time committed vs target.</div>
+          </a>
+          <a class="tile" href="{{ url_for('exercise.workout_logs') }}">
+            <div class="tile-title"><i class="fa-solid fa-clock-rotate-left"></i> Logs</div>
+            <div class="tile-desc">Review past sessions, durations, and ratings.</div>
+          </a>
+          <a class="tile" href="{{ url_for('exercise.admin_home') }}">
+            <div class="tile-title"><i class="fa-solid fa-gear"></i> Admin settings</div>
+            <div class="tile-desc">Manage exercises, warmups, and targets.</div>
+          </a>
         </div>
       </main>
     </div>

@@ -12,6 +12,8 @@ from .storage import (
     append_workout_log,
     load_difficulty_config,
     save_difficulty_config,
+    load_settings,
+    save_settings,
 )
 from .generate import generate_workout
 
@@ -22,7 +24,6 @@ from basecamp_core import login_required, admin_required, log_action, BASE_DIR
 
 
 WARMUP_CATEGORY_OPTIONS = ["cardio", "upper", "legs", "full-body", "mobility", "core", "stretch", "mixed"]
-DAILY_MINUTES_TARGET = 15
 
 
 def _paths():
@@ -124,7 +125,8 @@ def setup():
         exercises_path, warmups_path, _, config_path = _paths()
         exercises = load_json(exercises_path, [])
         warmups = [_normalize_warmup(w) for w in load_json(warmups_path, [])]
-        difficulty_config = load_difficulty_config(config_path)
+        settings = load_settings(config_path)
+        difficulty_config = settings.get("difficulty_config", load_difficulty_config(config_path))
 
         # Build lookup for descriptions in case existing data is missing them
         exercise_lookup = {e.get("name"): e for e in exercises}
@@ -304,8 +306,10 @@ def workout_logs():
 @login_required
 def progress():
     username = session.get("username")
-    _, _, log_path, _ = _paths()
+    _, _, log_path, config_path = _paths()
     now = datetime.now()
+    settings = load_settings(config_path)
+    daily_target = settings.get("daily_target", 15)
 
     counters = {
         "all": {"minutes": 0, "count": 0},
@@ -346,7 +350,6 @@ def progress():
 
     log_action(username, "exercise_progress_view")
     # Build a 7-day streak/goal view
-    daily_target = DAILY_MINUTES_TARGET
     past_days = []
     for i in range(6, -1, -1):
         day = now - timedelta(days=i)
@@ -432,7 +435,9 @@ def admin_exercises():
     username = session.get("username")
     exercises_path, _, _, config_path = _paths()
     exercises = load_json(exercises_path, [])
-    difficulty_config = load_difficulty_config(config_path)
+    settings = load_settings(config_path)
+    difficulty_config = settings.get("difficulty_config") or load_difficulty_config(config_path)
+    daily_target = settings.get("daily_target", 15)
 
     if request.method == "POST":
         # Add, update or delete
@@ -475,7 +480,7 @@ def admin_exercises():
 
         return redirect(url_for("exercise.admin_exercises"))
 
-    return render_template("exercise/admin_exercises.html", exercises=exercises, difficulty_config=difficulty_config)
+    return render_template("exercise/admin_exercises.html", exercises=exercises, difficulty_config=difficulty_config, daily_target=daily_target)
 
 @exercise_bp.route("/admin/warmups", methods=["GET", "POST"])
 @admin_required
@@ -526,7 +531,8 @@ def admin_warmups():
 def admin_settings():
     username = session.get("username")
     _, _, _, config_path = _paths()
-    config = load_difficulty_config(config_path)
+    settings = load_settings(config_path)
+    config = settings.get("difficulty_config") or load_difficulty_config(config_path)
 
     for diff in ["easy", "medium", "hard"]:
         count = int(request.form.get(f"{diff}_count") or config[diff]["count"])
@@ -536,6 +542,10 @@ def admin_settings():
             rep_max = rep_min
         config[diff] = {"count": count, "rep_min": rep_min, "rep_max": rep_max}
 
-    save_difficulty_config(config_path, config)
-    log_action(username, "exercise_admin_settings_updated", {"config": config})
+    daily_target = int(request.form.get("daily_target") or settings.get("daily_target", 15))
+    settings["difficulty_config"] = config
+    settings["daily_target"] = daily_target
+
+    save_settings(config_path, settings)
+    log_action(username, "exercise_admin_settings_updated", {"config": config, "daily_target": daily_target})
     return redirect(url_for("exercise.admin_exercises"))

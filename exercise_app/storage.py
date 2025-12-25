@@ -2,6 +2,11 @@ import os
 import json
 from .defaults import DEFAULT_EXERCISES, DEFAULT_WARMUPS, DEFAULT_DIFFICULTY_CONFIG
 
+DEFAULT_SETTINGS = {
+    "difficulty_config": DEFAULT_DIFFICULTY_CONFIG,
+    "daily_target": 15,
+}
+
 
 def ensure_data_files(base_dir: str) -> str:
     data_dir = os.path.join(base_dir, "exercise_app", "data")
@@ -27,7 +32,7 @@ def ensure_data_files(base_dir: str) -> str:
 
     if not os.path.exists(config_path):
         with open(config_path, "w") as f:
-            json.dump({"difficulty_config": DEFAULT_DIFFICULTY_CONFIG}, f, indent=2)
+            json.dump(DEFAULT_SETTINGS, f, indent=2)
 
     return data_dir
 
@@ -60,7 +65,7 @@ def append_workout_log(path: str, entry: dict):
 
 
 def load_difficulty_config(path: str):
-    data = load_json(path, {})
+    data = load_json(path, DEFAULT_SETTINGS)
     cfg = data.get("difficulty_config") or DEFAULT_DIFFICULTY_CONFIG
     # Ensure keys for each difficulty
     for diff, defaults in DEFAULT_DIFFICULTY_CONFIG.items():
@@ -74,5 +79,17 @@ def load_difficulty_config(path: str):
 
 
 def save_difficulty_config(path: str, config: dict):
-    save_json(path, {"difficulty_config": config})
+    current = load_json(path, DEFAULT_SETTINGS)
+    current["difficulty_config"] = config
+    save_json(path, current)
 
+
+def load_settings(path: str):
+    data = load_json(path, DEFAULT_SETTINGS)
+    data.setdefault("difficulty_config", DEFAULT_DIFFICULTY_CONFIG)
+    data.setdefault("daily_target", 15)
+    return data
+
+
+def save_settings(path: str, settings: dict):
+    save_json(path, settings)

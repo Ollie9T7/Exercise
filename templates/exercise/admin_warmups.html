@@ -6,18 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/exercise.css') }}">
+  <script defer src="{{ url_for('static', filename='js/nav.js') }}"></script>
 </head>
 <body>
   <div class="top-nav">
     <div class="page-width top-nav-inner">
-      <div class="nav-links">
-        <a href="{{ url_for('exercise.home') }}">BasecampMove</a>
-        <a href="{{ url_for('exercise.setup') }}">Exercise</a>
-        <a href="{{ url_for('exercise.progress') }}">Progress</a>
-        <a href="{{ url_for('exercise.workout_logs') }}">Workout Logs</a>
-      </div>
-      <div class="nav-links">
-        <a class="text-link" href="{{ url_for('exercise.admin_home') }}">Admin Home</a>
+      <button class="menu-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+      <a class="brand-button" href="{{ url_for('exercise.home') }}"><i class="fa-solid fa-dumbbell"></i> BasecampMove</a>
+      <div class="nav-links slideout">
+        <a class="primary-link" href="{{ url_for('exercise.setup') }}"><i class="fa-solid fa-play"></i> Start Workout</a>
+        <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Log Activity</a>
+        <a href="{{ url_for('exercise.progress') }}"><i class="fa-solid fa-chart-line"></i> Progress</a>
+        <a href="{{ url_for('exercise.workout_logs') }}"><i class="fa-solid fa-clock-rotate-left"></i> Workout Logs</a>
+        <a href="{{ url_for('exercise.admin_home') }}"><i class="fa-solid fa-gear"></i> Admin Home</a>
       </div>
     </div>
   </div>
