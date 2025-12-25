@@ -99,10 +99,6 @@ body {
   color: #0f3b94;
 }
 
-.nav-links.slideout a {
-  width: 100%;
-}
-
 .primary-link {
   background: linear-gradient(120deg, #dce9ff, #bcd6ff);
   border: 1px solid #bcd0ff;
@@ -522,6 +518,9 @@ button.icon-button:hover {
     box-shadow: 4px 0 12px rgba(0,0,0,0.08);
     transform: translateX(-100%);
     opacity: 0;
+  }
+  .nav-links.slideout a {
+    width: 100%;
   }
   body.nav-open .nav-links {
     transform: translateX(0);

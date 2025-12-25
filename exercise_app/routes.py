@@ -483,6 +483,8 @@ def admin_exercises():
             focus = (request.form.get("focus") or "mixed").strip().lower()
             allowed = request.form.getlist("difficulty_allowed")
             description = (request.form.get("description") or "").strip()
+            timer_seconds_val = request.form.get("timer_seconds")
+            timer_seconds = int(timer_seconds_val) if timer_seconds_val else None
 
             for ex in exercises:
                 if ex.get("name") == original_name:
@@ -490,6 +492,7 @@ def admin_exercises():
                     ex["focus"] = focus if focus in ("legs", "upper", "mixed") else "mixed"
                     ex["difficulty_allowed"] = [d for d in allowed if d in ("easy", "medium", "hard")] or ["easy", "medium", "hard"]
                     ex["description"] = description
+                    ex["timer_seconds"] = timer_seconds
                     break
             save_json(exercises_path, exercises)
             log_action(username, "exercise_admin_exercise_updated", {"name": name})
@@ -499,6 +502,8 @@ def admin_exercises():
             focus = (request.form.get("focus") or "mixed").strip().lower()
             allowed = request.form.getlist("difficulty_allowed")
             description = (request.form.get("description") or "").strip()
+            timer_seconds_val = request.form.get("timer_seconds")
+            timer_seconds = int(timer_seconds_val) if timer_seconds_val else None
 
             if name:
                 exercises.append({
@@ -506,6 +511,7 @@ def admin_exercises():
                     "focus": focus if focus in ("legs", "upper", "mixed") else "mixed",
                     "difficulty_allowed": [d for d in allowed if d in ("easy", "medium", "hard")] or ["easy", "medium", "hard"],
                     "description": description,
+                    "timer_seconds": timer_seconds,
                 })
                 save_json(exercises_path, exercises)
                 log_action(username, "exercise_admin_exercise_added", {"name": name})

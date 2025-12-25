@@ -65,6 +65,10 @@
                 <label><input type="checkbox" name="difficulty_allowed" value="hard" checked><span>Hard</span></label>
               </div>
             </div>
+            <label>
+              <span class="helper">Timer (seconds, optional)</span><br>
+              <input class="input-field" type="number" name="timer_seconds" min="0">
+            </label>
 
             <button class="primary-button" type="submit">Add exercise</button>
           </form>
@@ -137,6 +141,10 @@
                       {% endfor %}
                     </div>
                   </div>
+                  <label>
+                    <span class="helper">Timer (seconds, optional)</span><br>
+                    <input class="input-field" type="number" name="timer_seconds" value="{{ exercise.timer_seconds }}" min="0">
+                  </label>
                   <div class="button-row">
                     <button class="primary-button" type="submit">Save changes</button>
                   </div>

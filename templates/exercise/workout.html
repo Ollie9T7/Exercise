@@ -60,10 +60,12 @@
             {% if step.description %}
               <div class="description-box">{{ step.description }}</div>
             {% endif %}
-            <div class="timer">
-              <button class="ghost-button timer-start" type="button" data-duration="60">Start 60s timer</button>
-              <span class="timer-display"></span>
-            </div>
+            {% if step.timer_seconds %}
+              <div class="timer">
+                <button class="ghost-button timer-start" type="button" data-duration="{{ step.timer_seconds }}">Start timer</button>
+                <span class="timer-display"></span>
+              </div>
+            {% endif %}
           {% endif %}
 
           <form method="post" class="button-row">

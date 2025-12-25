@@ -4,54 +4,63 @@ DEFAULT_EXERCISES = [
         "focus": "legs",
         "difficulty_allowed": ["easy", "medium", "hard"],
         "description": "Stand tall with feet shoulder-width apart. Push hips back as if sitting into a chair, keep chest lifted, knees tracking over toes, descend until thighs are parallel or comfortable depth, then drive through heels to stand.",
+        "timer_seconds": None,
     },
     {
         "name": "Lunges",
         "focus": "legs",
         "difficulty_allowed": ["medium", "hard"],
         "description": "Step one foot forward, lower the back knee toward the floor while keeping torso upright, front knee over mid-foot. Light tap the ground, then press through the front heel to return.",
+        "timer_seconds": None,
     },
     {
         "name": "Glute Bridges",
         "focus": "legs",
         "difficulty_allowed": ["easy", "medium", "hard"],
         "description": "Lie on your back, knees bent, heels close to glutes. Brace core, drive hips up by squeezing glutes, pause at the top without arching the back, then lower slowly.",
+        "timer_seconds": None,
     },
     {
         "name": "Press-ups",
         "focus": "upper",
         "difficulty_allowed": ["easy", "medium", "hard"],
         "description": "Hands under shoulders, feet hip-width, body in a straight line. Lower chest toward the floor by bending elbows at 45°, lightly touch, then press back to plank without hips sagging.",
+        "timer_seconds": None,
     },
     {
         "name": "Incline Press-ups",
         "focus": "upper",
         "difficulty_allowed": ["easy", "medium"],
         "description": "Hands on a sturdy bench/table, feet back to a straight line. Lower chest to the edge while bracing core, then press away, keeping elbows at ~45°.",
+        "timer_seconds": None,
     },
     {
         "name": "Tricep Dips (Chair)",
         "focus": "upper",
         "difficulty_allowed": ["medium", "hard"],
         "description": "Hands on chair behind hips, fingers forward, legs extended or bent. Lower by bending elbows straight back, shoulders away from ears, then press up without locking elbows.",
+        "timer_seconds": None,
     },
     {
         "name": "Mountain Climbers",
         "focus": "mixed",
         "difficulty_allowed": ["easy", "medium", "hard"],
         "description": "High plank with shoulders over wrists. Drive one knee toward chest, switch quickly like running in place while keeping hips level and core braced.",
+        "timer_seconds": None,
     },
     {
         "name": "Burpees",
         "focus": "mixed",
         "difficulty_allowed": ["hard"],
         "description": "Squat to place hands on floor, jump feet back to plank, optional push-up, snap feet back under hips, then jump explosively with hands overhead.",
+        "timer_seconds": None,
     },
     {
         "name": "Plank Shoulder Taps",
         "focus": "mixed",
         "difficulty_allowed": ["medium", "hard"],
         "description": "High plank, feet a bit wider than hips. Tap opposite shoulder with one hand while keeping hips square and glutes/core engaged. Alternate sides smoothly.",
+        "timer_seconds": None,
     },
 ]
 
@@ -99,4 +108,3 @@ DEFAULT_DIFFICULTY_CONFIG = {
     "medium": {"count": 6, "rep_min": 8, "rep_max": 14},
     "hard": {"count": 8, "rep_min": 10, "rep_max": 20},
 }
-

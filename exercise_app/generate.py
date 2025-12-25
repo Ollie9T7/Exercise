@@ -31,6 +31,7 @@ def generate_workout(exercises: list, difficulty: str, focus: str, rules: dict):
             "reps": reps,
             "description": ex.get("description", ""),
             "status": None,
+            "timer_seconds": ex.get("timer_seconds"),
         }
         exercise_steps.append(step)
 
