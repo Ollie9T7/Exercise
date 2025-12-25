@@ -15,7 +15,7 @@
       <a class="brand-button" href="{{ url_for('exercise.home') }}"><span>Basecamp</span><span class="accent">Move</span></a>
       <div class="nav-links slideout">
         <a class="primary-link" href="{{ url_for('exercise.setup') }}"><i class="fa-solid fa-play"></i> Start Workout</a>
-        <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Log Activity</a>
+        <a class="primary-link ghost" href="{{ url_for('exercise.manual_log') }}"><i class="fa-solid fa-person-walking"></i> Record Activity</a>
         <a href="{{ url_for('exercise.progress') }}"><i class="fa-solid fa-chart-line"></i> Progress</a>
         <a href="{{ url_for('exercise.workout_logs') }}"><i class="fa-solid fa-clock-rotate-left"></i> Workout Logs</a>
         <span class="pill">{{ state.difficulty|capitalize }} · {{ state.focus|capitalize }}</span>
