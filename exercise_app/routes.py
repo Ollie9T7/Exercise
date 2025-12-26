@@ -294,8 +294,14 @@ def workout_logs():
                         entry["_idx"] = idx
                         try:
                             entry["started_day"] = datetime.fromisoformat(entry.get("started_at")).strftime("%A")
+                            entry["started_date"] = datetime.fromisoformat(entry.get("started_at")).strftime("%d/%m/%y")
+                            entry["started_time"] = datetime.fromisoformat(entry.get("started_at")).strftime("%H:%M")
+                            entry["ended_time"] = datetime.fromisoformat(entry.get("ended_at")).strftime("%H:%M") if entry.get("ended_at") else ""
                         except Exception:
                             entry["started_day"] = ""
+                            entry["started_date"] = ""
+                            entry["started_time"] = ""
+                            entry["ended_time"] = ""
                         logs.append(entry)
                     except json.JSONDecodeError:
                         continue

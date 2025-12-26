@@ -40,17 +40,10 @@
             <ul class="list">
               {% for entry in logs %}
                 <li>
-                  <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                  <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
                     <div>
-                      <strong>{{ entry.started_day }} - {{ entry.started_display }}</strong>
-                      <div>{{ entry.duration_minutes }} minutes</div>
-                      <div class="helper">{{ entry.started_display }} → {{ entry.ended_display }}</div>
-                      {% if entry.rating %}
-                        <div class="helper">{{ "★" * entry.rating }}</div>
-                      {% endif %}
-                      {% if entry.type == "manual" and entry.notes %}
-                        <div class="helper">{{ entry.notes }}</div>
-                      {% endif %}
+                      <strong>{{ entry.started_day }} - {{ entry.started_date }}</strong>
+                      <span class="helper">· {{ entry.duration_minutes }} minutes</span>
                     </div>
                     <div class="chips">
                       {% if entry.steps %}
@@ -65,13 +58,22 @@
                       {% endif %}
                     </div>
                   </div>
+                  <div class="helper">{{ entry.started_time }} → {{ entry.ended_time }}</div>
+                  {% if entry.rating %}
+                    <div class="helper">{{ "★" * entry.rating }}</div>
+                  {% endif %}
+                  {% if entry.type == "manual" and entry.notes %}
+                    <div class="helper">{{ entry.notes }}</div>
+                  {% endif %}
+                  <div class="helper">User: {{ entry.user or "Unknown" }}</div>
                   <div class="helper">
-                    User: {{ entry.user or "Unknown" }} |
-                    Workout: {% if entry.type == "manual" %}{{ entry.name or "Manual activity" }}{% else %}{{ entry.difficulty|capitalize }} · {{ entry.focus|capitalize }}{% endif %} |
+                    Workout: {% if entry.type == "manual" %}{{ entry.name or "Manual activity" }}{% else %}{{ entry.difficulty|capitalize }} · {{ entry.focus|capitalize }}{% endif %}
+                  </div>
+                  <div class="helper">
                     {% if entry.warmups and entry.type != "manual" %}
                       Warmups: {{ entry.warmups | map(attribute="name") | join(", ") }}
                     {% else %}
-                      No warmups
+                      Warmups: None
                     {% endif %}
                   </div>
                 </li>

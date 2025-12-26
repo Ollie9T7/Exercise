@@ -433,12 +433,18 @@ body {
   color: #0f3b94;
 }
 
-/* Tiles */
-.tile-grid {
+.rating-group {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 8px;
 }
+
+/* Tiles */
+  .tile-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
 
 .tile {
   border: 1px solid var(--border);
@@ -536,6 +542,7 @@ button.icon-button:hover {
   }
   .card { padding: 18px; }
   .reps-focus { font-size: 78px; }
+  .rating-group { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {

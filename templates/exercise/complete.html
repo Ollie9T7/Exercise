@@ -70,7 +70,7 @@
           <form action="{{ url_for('exercise.complete') }}" method="post" class="form-grid">
             <div>
               <span class="helper">Rate this workout</span>
-              <div class="option-group stacked-on-mobile" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap:8px;">
+              <div class="option-group rating-group stacked-on-mobile">
                 {% for val in [1,2,3,4,5] %}
                   <label style="padding:10px 12px; min-width:60px; justify-content:center;">
                     <input type="radio" name="rating" value="{{ val }}" {% if state.rating == val %}checked{% endif %}>
