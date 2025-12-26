@@ -428,6 +428,9 @@ def progress():
                         if not line.strip():
                             continue
                         entry = json.loads(line)
+                        entry_user = entry.get("user")
+                        if not (entry_user and current_user and entry_user.lower() == current_user.lower()):
+                            continue
                         start_iso = entry.get("started_at")
                         end_iso = entry.get("ended_at")
                         if not start_iso or not end_iso:
