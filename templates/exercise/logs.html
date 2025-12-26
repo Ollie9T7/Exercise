@@ -42,10 +42,11 @@
                 <li>
                   <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
                     <div>
-                      <strong>{% if entry.type == "manual" %}{{ entry.name }}{% else %}{{ entry.difficulty|capitalize }} · {{ entry.focus|capitalize }}{% endif %}</strong>
-                      <span>{{ entry.started_display }} → {{ entry.ended_display }} ({{ entry.duration_minutes }} min)</span>
+                      <strong>{{ entry.started_day }} - {{ entry.started_display }}</strong>
+                      <div>{{ entry.duration_minutes }} minutes</div>
+                      <div class="helper">{{ entry.started_display }} → {{ entry.ended_display }}</div>
                       {% if entry.rating %}
-                        <span>{{ "★" * entry.rating }}</span>
+                        <div class="helper">{{ "★" * entry.rating }}</div>
                       {% endif %}
                       {% if entry.type == "manual" and entry.notes %}
                         <div class="helper">{{ entry.notes }}</div>
@@ -64,10 +65,15 @@
                       {% endif %}
                     </div>
                   </div>
-                  <div class="helper">User: {{ entry.user or "Unknown" }}</div>
-                  {% if entry.warmups %}
-                    <div class="helper">Warmups: {{ entry.warmups | map(attribute="name") | join(", ") }}</div>
-                  {% endif %}
+                  <div class="helper">
+                    User: {{ entry.user or "Unknown" }} |
+                    Workout: {% if entry.type == "manual" %}{{ entry.name or "Manual activity" }}{% else %}{{ entry.difficulty|capitalize }} · {{ entry.focus|capitalize }}{% endif %} |
+                    {% if entry.warmups and entry.type != "manual" %}
+                      Warmups: {{ entry.warmups | map(attribute="name") | join(", ") }}
+                    {% else %}
+                      No warmups
+                    {% endif %}
+                  </div>
                 </li>
               {% endfor %}
             </ul>

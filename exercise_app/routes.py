@@ -292,6 +292,10 @@ def workout_logs():
                         entry["name"] = entry.get("name")
                         entry["notes"] = entry.get("notes")
                         entry["_idx"] = idx
+                        try:
+                            entry["started_day"] = datetime.fromisoformat(entry.get("started_at")).strftime("%A")
+                        except Exception:
+                            entry["started_day"] = ""
                         logs.append(entry)
                     except json.JSONDecodeError:
                         continue

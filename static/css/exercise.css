@@ -209,6 +209,10 @@ body {
   gap: 10px;
 }
 
+.option-group.stacked-on-mobile {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
 .option-group label {
   display: flex;
   align-items: center;
