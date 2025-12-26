@@ -40,7 +40,7 @@
           <div class="progress-bars">
             {% for day in past_days %}
               <div class="progress-row">
-                <div class="progress-label">{{ day.label }} ({{ day.date_label }})</div>
+                <div class="progress-label">{{ day.label }}</div>
                 <div class="progress-track">
                   {% if day.minutes <= 0 %}
                     <div class="progress-fill none" style="width: 100%;">

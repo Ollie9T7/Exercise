@@ -287,6 +287,7 @@ def workout_logs():
     username = session.get("username")
     _, _, log_path, _ = _paths()
     logs = []
+    current_user = session.get("name") or session.get("username")
     if os.path.exists(log_path):
         try:
             with open(log_path, "r") as f:
@@ -312,7 +313,9 @@ def workout_logs():
                             entry["started_date"] = ""
                             entry["started_time"] = ""
                             entry["ended_time"] = ""
-                        logs.append(entry)
+                        entry_user = entry.get("user")
+                        if entry_user and current_user and entry_user.lower() == current_user.lower():
+                            logs.append(entry)
                     except json.JSONDecodeError:
                         continue
         except OSError:
@@ -324,10 +327,11 @@ def workout_logs():
 
 
 @exercise_bp.route("/logs/delete", methods=["POST"])
-@admin_required
+@login_required
 def delete_log():
     username = session.get("username")
     _, _, log_path, _ = _paths()
+    current_user = session.get("name") or session.get("username")
     idx_str = request.form.get("idx")
     try:
         idx = int(idx_str)
@@ -341,11 +345,19 @@ def delete_log():
         with open(log_path, "r") as f:
             lines = f.readlines()
         if 0 <= idx < len(lines):
-            del lines[idx]
-            with open(log_path, "w") as f:
-                f.writelines(lines)
-            log_action(username, "exercise_log_deleted", {"idx": idx})
-            return redirect(url_for("exercise.workout_logs", msg="Log deleted"))
+            try:
+                entry = json.loads(lines[idx])
+                entry_user = entry.get("user")
+            except Exception:
+                entry_user = None
+            if entry_user and current_user and entry_user.lower() == current_user.lower():
+                del lines[idx]
+                with open(log_path, "w") as f:
+                    f.writelines(lines)
+                log_action(username, "exercise_log_deleted", {"idx": idx})
+                return redirect(url_for("exercise.workout_logs", msg="Log deleted"))
+            else:
+                return redirect(url_for("exercise.workout_logs", msg="Cannot delete this log"))
     except OSError:
         pass
 
@@ -360,6 +372,7 @@ def progress():
     now = datetime.now()
     settings = load_settings(config_path)
     daily_target = settings.get("daily_target", 15)
+    current_user = session.get("name") or session.get("username")
 
     counters = {
         "all": {"minutes": 0, "count": 0},
@@ -376,6 +389,9 @@ def progress():
                         continue
                     try:
                         entry = json.loads(line)
+                        entry_user = entry.get("user")
+                        if not (entry_user and current_user and entry_user.lower() == current_user.lower()):
+                            continue
                         start_iso = entry.get("started_at")
                         end_iso = entry.get("ended_at")
                         duration = _calc_duration_minutes(start_iso, end_iso)
@@ -422,11 +438,10 @@ def progress():
             except Exception:
                 pass
         past_days.append({
-            "label": day.strftime("%a"),
+            "label": day.strftime("%A - %d/%m/%y"),
             "minutes": minutes,
             "target": daily_target,
             "over": minutes - daily_target,
-            "date_label": day.strftime("%d/%m"),
         })
 
     return render_template("exercise/progress.html", counters=counters, past_days=past_days, daily_target=daily_target)

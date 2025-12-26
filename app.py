@@ -498,7 +498,7 @@ def dashboard():
         },
         {
             "name": "Exercise",
-            "url": url_for("exercise.setup"),
+            "url": url_for("exercise.home"),
             "description": "Generate and run a quick workout.",
             "icon": "fa-solid fa-dumbbell",
         },
@@ -665,5 +665,4 @@ def office_notify_send():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
-
 
