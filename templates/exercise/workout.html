@@ -56,6 +56,9 @@
               <span class="pill">Exercise</span>
             </div>
             <p class="reps-focus">{{ step.reps }}</p>
+            {% if step.sets %}
+              <div class="helper">Sets: {{ step.sets }}</div>
+            {% endif %}
             <h2>{{ step.name }}</h2>
             {% if step.description %}
               <div class="description-box">{{ step.description }}</div>

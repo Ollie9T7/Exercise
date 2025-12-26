@@ -25,10 +25,12 @@ def generate_workout(exercises: list, difficulty: str, focus: str, rules: dict):
 
     for idx, ex in enumerate(chosen, start=1):
         reps = random.randint(rules["rep_min"], rules["rep_max"])
+        sets = random.randint(rules.get("set_min", 1), rules.get("set_max", 1))
         step = {
             "type": "exercise",
             "name": ex["name"],
             "reps": reps,
+            "sets": sets,
             "description": ex.get("description", ""),
             "status": None,
             "timer_seconds": ex.get("timer_seconds"),

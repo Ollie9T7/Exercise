@@ -98,6 +98,16 @@
                     <input class="input-field" type="number" name="{{ diff }}_rep_max" value="{{ cfg.rep_max }}" min="1">
                   </label>
                 </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <label>
+                    <span class="helper">Min sets</span><br>
+                    <input class="input-field" type="number" name="{{ diff }}_set_min" value="{{ cfg.set_min or 1 }}" min="1">
+                  </label>
+                  <label>
+                    <span class="helper">Max sets</span><br>
+                    <input class="input-field" type="number" name="{{ diff }}_set_max" value="{{ cfg.set_max or cfg.set_min or 1 }}" min="1">
+                  </label>
+                </div>
               </div>
             {% endfor %}
             <div class="button-row">

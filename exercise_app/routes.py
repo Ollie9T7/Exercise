@@ -49,20 +49,30 @@ def _normalize_warmup(warmup: dict):
 
 def _select_warmups(warmups: list, focus: str):
     """
-    Choose warmups ensuring at least one cardio and one mobility/stretch.
+    Choose warmups ensuring at least one cardio, one mobility/stretch,
+    and all warmups related to the chosen focus.
     """
     normalized = [_normalize_warmup(w) for w in warmups]
     cardio = [w for w in normalized if "cardio" in w["categories"]]
     stretch = [w for w in normalized if "mobility" in w["categories"] or "stretch" in w["categories"]]
+    focus_related = [w for w in normalized if focus in w["categories"] or "full-body" in w["categories"] or "mixed" in w["categories"]]
     fallback = normalized or [_normalize_warmup({})]
 
     chosen = []
+    # Add all focus-related warmups
+    chosen.extend(focus_related)
+
+    # Ensure at least one cardio
     if cardio:
-        chosen.append(random.choice(cardio))
+        c_pick = random.choice(cardio)
+        if c_pick not in chosen:
+            chosen.append(c_pick)
+
+    # Ensure at least one stretch
     if stretch:
-        pick = random.choice(stretch)
-        if pick not in chosen:
-            chosen.append(pick)
+        s_pick = random.choice(stretch)
+        if s_pick not in chosen:
+            chosen.append(s_pick)
 
     # if still empty, pick any two fallback
     if not chosen:
@@ -590,9 +600,13 @@ def admin_settings():
         count = int(request.form.get(f"{diff}_count") or config[diff]["count"])
         rep_min = int(request.form.get(f"{diff}_rep_min") or config[diff]["rep_min"])
         rep_max = int(request.form.get(f"{diff}_rep_max") or config[diff]["rep_max"])
+        set_min = int(request.form.get(f"{diff}_set_min") or config[diff].get("set_min", 1))
+        set_max = int(request.form.get(f"{diff}_set_max") or config[diff].get("set_max", set_min))
         if rep_max < rep_min:
             rep_max = rep_min
-        config[diff] = {"count": count, "rep_min": rep_min, "rep_max": rep_max}
+        if set_max < set_min:
+            set_max = set_min
+        config[diff] = {"count": count, "rep_min": rep_min, "rep_max": rep_max, "set_min": set_min, "set_max": set_max}
 
     daily_target = int(request.form.get("daily_target") or settings.get("daily_target", 15))
     settings["difficulty_config"] = config

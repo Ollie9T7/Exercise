@@ -104,7 +104,7 @@ DEFAULT_WARMUPS = [
 ]
 
 DEFAULT_DIFFICULTY_CONFIG = {
-    "easy": {"count": 4, "rep_min": 6, "rep_max": 10},
-    "medium": {"count": 6, "rep_min": 8, "rep_max": 14},
-    "hard": {"count": 8, "rep_min": 10, "rep_max": 20},
+    "easy": {"count": 4, "rep_min": 6, "rep_max": 10, "set_min": 2, "set_max": 3},
+    "medium": {"count": 6, "rep_min": 8, "rep_max": 14, "set_min": 3, "set_max": 4},
+    "hard": {"count": 8, "rep_min": 10, "rep_max": 20, "set_min": 4, "set_max": 5},
 }

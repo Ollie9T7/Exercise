@@ -49,7 +49,7 @@ body {
 .brand-button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 0;
   padding: 8px 0;
   border: none;
   background: transparent;
@@ -258,7 +258,7 @@ body {
 }
 
 .reps-focus {
-  font-size: 72px;
+  font-size: 170px;
   font-weight: 800;
   color: #0f3b94;
   line-height: 1;
@@ -541,7 +541,7 @@ button.icon-button:hover {
     opacity: 1;
   }
   .card { padding: 18px; }
-  .reps-focus { font-size: 78px; }
+  .reps-focus { font-size: 170px; }
   .rating-group { grid-template-columns: 1fr; }
 }
 
